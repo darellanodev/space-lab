@@ -16,7 +16,7 @@ Each delivery: `spacelab-v0-X-0.zip` with `manifest.json` and `package.json` in 
 | Version | Feature | Status |
 |---|---|---|
 | 0.1.0 | Vite + Three.js skeleton, scene, camera, game loop, manifest | ✅ |
-| 0.2.0 | GLB model loader + space skybox | ☐ |
+| 0.2.0 | FBX model loader (GLB later) + space skybox + character animations demo | ✅ |
 | 0.3.0 | Character: movement, camera and wall collisions | ☐ |
 | 0.4.0 | Unity scene → JSON level importer (prefab positions) and level 1 loading | ☐ |
 | 0.5.0 | Computers, exit door, teleport and end of level | ☐ |
@@ -36,7 +36,7 @@ Each delivery: `spacelab-v0-X-0.zip` with `manifest.json` and `package.json` in 
 ## Waiting for files
 - [ ] `Assets/Scenes/niveles/*.unity` (scene1–3) and `Assets/Scenes/portadas/*.unity`
 - [ ] `Assets/Prefabs` (`.prefab`) and `Assets/Animations`
-- [ ] Models converted to `.glb` (`Assets/Meshes`) and textures
+- [ ] Remaining models (`Assets/Meshes`, `.fbx` is fine) and textures
 - [ ] Sounds (`Assets/Sounds`)
 - [ ] Character controls and camera (see `Standard Assets/Character Controllers`)
 
