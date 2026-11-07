@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="./manifest.json" />
+  <title>SpaceLab</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #000; overflow: hidden; font-family: monospace; }
+    #game { display: block; width: 100%; height: 100%; }
+    #info { position: fixed; left: 8px; top: 8px; color: #7fdcff; font-size: 12px; pointer-events: none; white-space: pre; }
+  </style>
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="info"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
