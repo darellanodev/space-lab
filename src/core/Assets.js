@@ -17,6 +17,12 @@ export class Assets {
     this.manager = new THREE.LoadingManager();
     this.manager.setURLModifier((url) => this._fixUrl(url));
     this.fbxLoader = new FBXLoader(this.manager);
+    this.textureLoader = new THREE.TextureLoader();
+    // Material name in the FBX -> texture file
+    this.materialTextures = {
+      skin: 'skin_diffuse.png',
+      clothes: 'clothes_diffuse.png',
+    };
   }
 
   _fixUrl(url) {
@@ -30,16 +36,37 @@ export class Assets {
   /** Loads an FBX model. Returns the Object3D (with `.animations`). */
   async loadFBX(file) {
     const model = await this.fbxLoader.loadAsync(`${BASE}models/${file}`);
+    let meshes = 0;
+    const extra = [];
     model.traverse((node) => {
+      // Remove helper objects (points, sprites, lights, lines) that come inside the FBX
+      if (node.isPoints || node.isSprite || node.isLight || node.isLine) extra.push(node);
       if (!node.isMesh) return;
-      node.castShadow = true;
+      meshes++;
+      node.frustumCulled = false; // skinned meshes can have a wrong bounding sphere
       const materials = Array.isArray(node.material) ? node.material : [node.material];
       for (const m of materials) {
         m.normalMap = null; // missing in our assets
+        m.side = THREE.DoubleSide; // some faces are flipped in the FBX
+        const texFile = this.materialTextures[m.name];
+        if (texFile) {
+          // We set the texture by hand. It is more reliable than the FBX paths.
+          m.map = this.textureLoader.load(`${BASE}textures/character/${texFile}`);
+          m.color.set(0xffffff);
+        }
+        m.emissive?.set(0x000000); // the FBX exports white emissive, that makes it glow
+        m.emissiveMap = null;
+        m.specular?.set(0x222222);
+        m.opacity = 1; // some FBX files export opacity 0 by mistake
+        m.transparent = false;
         if (m.map) m.map.colorSpace = THREE.SRGBColorSpace;
         m.needsUpdate = true;
+        console.info(`[${file}] material "${m.name}" map:`, m.map ? 'yes' : 'no');
       }
     });
+    for (const node of extra) node.removeFromParent();
+    if (extra.length) console.info(`[${file}] removed helper objects:`, extra.map((n) => n.type));
+    console.info(`[${file}] meshes: ${meshes}, animations: ${model.animations.length}`);
     return model;
   }
 
@@ -59,11 +86,34 @@ export class Assets {
  */
 export function fitToHeight(object, height) {
   object.updateMatrixWorld(true);
-  const box = new THREE.Box3().setFromObject(object);
+  let box = getBox(object);
   const size = box.getSize(new THREE.Vector3());
   console.info('[fitToHeight] original size', size.toArray().map((v) => +v.toFixed(3)));
-  if (size.y > 0) object.scale.multiplyScalar(height / size.y);
-  object.updateMatrixWorld(true);
-  const fitted = new THREE.Box3().setFromObject(object);
-  object.position.y -= fitted.min.y;
+  if (size.y > 0 && Number.isFinite(size.y)) {
+    object.scale.multiplyScalar(height / size.y);
+    object.updateMatrixWorld(true);
+    box = getBox(object);
+    object.position.y -= box.min.y;
+    object.updateMatrixWorld(true);
+  } else {
+    console.warn('[fitToHeight] invalid size, model not scaled');
+  }
+  return getBox(object);
+}
+
+/** Bounding box that also works for skinned meshes (uses the skinned vertices). */
+function getBox(object) {
+  const box = new THREE.Box3();
+  object.traverse((node) => {
+    if (!node.isMesh) return;
+    if (node.isSkinnedMesh) {
+      node.skeleton.update();
+      node.computeBoundingBox();
+    } else {
+      node.geometry.computeBoundingBox();
+    }
+    const b = (node.boundingBox || node.geometry.boundingBox).clone();
+    box.union(b.applyMatrix4(node.matrixWorld));
+  });
+  return box;
 }

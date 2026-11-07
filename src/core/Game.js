@@ -42,8 +42,8 @@ export class Game {
   }
 
   _buildLights() {
-    this.scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x202030, 1.2));
-    const sun = new THREE.DirectionalLight(0xffffff, 2);
+    this.scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x202030, 0.8));
+    const sun = new THREE.DirectionalLight(0xffffff, 1.5);
     sun.position.set(5, 10, 7);
     this.scene.add(sun);
     this.scene.add(new THREE.GridHelper(20, 20, 0x3388aa, 0x113344));
@@ -60,14 +60,16 @@ export class Game {
 
       this.scene.background = sky;
 
-      fitToHeight(character, 1.8);
-      character.position.x = -1.5;
       this.scene.add(character);
+      const box = fitToHeight(character, 1.8);
+      character.position.x -= 1.5;
+      console.info('[character] box after fit', box.min.toArray(), box.max.toArray());
+      this.scene.add(new THREE.BoxHelper(character, 0xffff00)); // debug: yellow box
       this._setupAnimations(character);
 
-      fitToHeight(computer, 1.2);
-      computer.position.x = 1.5;
       this.scene.add(computer);
+      fitToHeight(computer, 1.2);
+      computer.position.x += 1.5;
       this.updatables.push((dt) => { computer.rotation.y += dt * 0.5; });
     } catch (err) {
       console.error(err);
@@ -78,10 +80,15 @@ export class Game {
   _setupAnimations(character) {
     const clips = character.animations;
     console.info('[animations]', clips.map((c) => `${c.name} (${c.duration.toFixed(2)}s)`));
+    this.clipsInfo = clips.map((c) => `${c.name} ${c.duration.toFixed(2)}s`).join(', ') || 'none';
     if (!clips.length) return;
 
     this.mixer = new THREE.AnimationMixer(character);
-    for (const clip of clips) this.actions[clip.name.toLowerCase()] = this.mixer.clipAction(clip);
+    // Clip names in this FBX look like "rig|Idle". We keep only the last part, in lower case.
+    for (const clip of clips) {
+      const key = clip.name.split('|').pop().toLowerCase();
+      this.actions[key] = this.mixer.clipAction(clip);
+    }
     this._play(this.actions.idle ? 'idle' : Object.keys(this.actions)[0]);
   }
 
@@ -94,7 +101,14 @@ export class Game {
     this.currentName = name;
   }
 
+  _stopAnimation() {
+    if (this.mixer) this.mixer.stopAllAction();
+    this.currentAction = null;
+    this.currentName = 'none (base pose)';
+  }
+
   _onKey(e) {
+    if (e.key === '0') this._stopAnimation(); // shows the base pose
     if (e.key === '1') this._play('idle');
     if (e.key === '2') this._play('walk');
     if (e.key === '3') this._play('run');
@@ -125,7 +139,8 @@ export class Game {
       this._fps = Math.round(this._frames / this._fpsTime);
       this._frames = 0;
       this._fpsTime = 0;
-      let text = `SpaceLab v${VERSION}\n${this._fps} fps\nKeys: 1 idle, 2 walk, 3 run`;
+      let text = `SpaceLab v${VERSION}\n${this._fps} fps\nKeys: 0 base pose, 1 idle, 2 walk, 3 run`;
+      if (this.clipsInfo) text += `\nClips: ${this.clipsInfo}`;
       if (this.currentName) text += `\nAnimation: ${this.currentName}`;
       if (this.loadError) text += `\nLOAD ERROR: ${this.loadError}`;
       this.infoEl.textContent = text;

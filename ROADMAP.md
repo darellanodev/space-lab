@@ -36,7 +36,8 @@ Each delivery: `spacelab-v0-X-0.zip` with `manifest.json` and `package.json` in 
 ## Waiting for files
 - [ ] `Assets/Scenes/niveles/*.unity` (scene1–3) and `Assets/Scenes/portadas/*.unity`
 - [ ] `Assets/Prefabs` (`.prefab`) and `Assets/Animations`
-- [ ] Remaining models (`Assets/Meshes`, `.fbx` is fine) and textures
+- [x] All models (`Assets/Meshes`, `.fbx`) and character / skybox textures
+- [ ] Rest of the textures (`Assets/Textures`) and materials (`Assets/Materials`)
 - [ ] Sounds (`Assets/Sounds`)
 - [ ] Character controls and camera (see `Standard Assets/Character Controllers`)
 
