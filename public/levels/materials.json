@@ -1,0 +1,321 @@
+{
+ "Skybox.mat": {
+  "name": "Skybox",
+  "textures": {
+   "_FrontTex": {
+    "file": "spacestars_front5.png",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   },
+   "_BackTex": {
+    "file": "spacestars_back6.png",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   },
+   "_LeftTex": {
+    "file": "spacestars_left2.png",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   },
+   "_RightTex": {
+    "file": "spacestars_right1.png",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   },
+   "_UpTex": {
+    "file": "spacestars_top3.png",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   },
+   "_DownTex": {
+    "file": "spacestars_bottom4.png",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "colors": {
+   "_Color": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "_Tint": [
+    0.5,
+    0.5,
+    0.5,
+    0.5
+   ]
+  },
+  "floats": {}
+ },
+ "Humo.mat": {
+  "name": "Humo",
+  "textures": {
+   "_MainTex": {
+    "guid": "d1d6a23fa4c86e741a40d94fec7d3aee",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "colors": {
+   "_Color": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "floats": {
+   "PixelSnap": 0.0
+  }
+ },
+ "Sprite.mat": {
+  "name": "Sprite",
+  "textures": {},
+  "colors": {
+   "_Color": [
+    1.0,
+    1.0,
+    1.0,
+    0.509804
+   ]
+  },
+  "floats": {
+   "PixelSnap": 0.0
+  }
+ },
+ "Material2.mat": {
+  "name": "Material2",
+  "textures": {
+   "_MainTex": {
+    "guid": "33930e7c0f97f6945a89d4b02e3bd7ee",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   },
+   "_BumpMap": {
+    "guid": "d125bdba1252c9e419c82c507037acea",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   },
+   "_Illum": {
+    "guid": "50c200e680dd46d4e9336166880cef32",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "colors": {
+   "_Color": [
+    0.784314,
+    0.784314,
+    0.784314,
+    1.0
+   ],
+   "_SpecColor": [
+    0.784314,
+    0.784314,
+    0.784314,
+    1.0
+   ]
+  },
+  "floats": {
+   "_Shininess": 0.0841578,
+   "_EmissionLM": 0.0
+  }
+ },
+ "Material_Transparent.mat": {
+  "name": "Material_Transparent",
+  "textures": {
+   "_MainTex": {
+    "guid": "d629d75d5530d8947bddd277c2831615",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "colors": {
+   "_Color": [
+    1.0,
+    1.0,
+    1.0,
+    0.858824
+   ]
+  },
+  "floats": {}
+ },
+ "Material.mat": {
+  "name": "Material",
+  "textures": {
+   "_MainTex": {
+    "guid": "d629d75d5530d8947bddd277c2831615",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   },
+   "_BumpMap": {
+    "guid": "20b74ecb9a941704b9766f7e10cad7b2",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "colors": {
+   "_Color": [
+    0.784314,
+    0.784314,
+    0.784314,
+    1.0
+   ]
+  },
+  "floats": {
+   "_EmissionLM": 0.0
+  }
+ },
+ "skin_diffuse.mat": {
+  "name": "skin_diffuse",
+  "textures": {
+   "_MainTex": {
+    "file": "skin_diffuse.png",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   },
+   "_BumpMap": {
+    "guid": "558e752c49dea84409414c2a9b069efe",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "colors": {
+   "_Color": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "floats": {}
+ },
+ "clothes_diffuse.mat": {
+  "name": "clothes_diffuse",
+  "textures": {
+   "_MainTex": {
+    "file": "clothes_diffuse.png",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   },
+   "_BumpMap": {
+    "guid": "5bb459b695723264b858b2eb3603c432",
+    "scale": [
+     1.0,
+     1.0
+    ],
+    "offset": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "colors": {
+   "_Color": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "floats": {}
+ }
+}

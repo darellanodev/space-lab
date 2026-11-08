@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Assets, fitToHeight } from './Assets.js';
+import { LevelLoader, LIGHT_SCALE } from '../game/LevelLoader.js';
 
 /* global __APP_VERSION__ */
 export const VERSION = __APP_VERSION__;
@@ -18,7 +19,7 @@ export class Game {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x02030a);
 
-    this.camera = new THREE.PerspectiveCamera(60, 1, 0.1, 500);
+    this.camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
     this.camera.position.set(0, 2.2, 5);
 
     this.controls = new OrbitControls(this.camera, canvas);
@@ -42,39 +43,60 @@ export class Game {
   }
 
   _buildLights() {
-    this.scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x202030, 0.8));
-    const sun = new THREE.DirectionalLight(0xffffff, 1.5);
-    sun.position.set(5, 10, 7);
-    this.scene.add(sun);
-    this.scene.add(new THREE.GridHelper(20, 20, 0x3388aa, 0x113344));
+    // The original level used baked lightmaps (not ported yet), so we add a soft ambient light.
+    this.scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x606070, LIGHT_SCALE.ambient));
   }
 
-  /** Loads the sky and the demo models. Errors are shown on screen. */
+  /** Loads the sky, the level (?level=1, 2 or 3 in the URL) and the character. */
   async loadContent() {
     try {
-      const [sky, character, computer] = await Promise.all([
+      const levelNumber = Number(new URLSearchParams(location.search).get('level')) || 1;
+      this.levelNumber = levelNumber;
+      const loader = new LevelLoader(this.assets);
+      const [sky, level, character] = await Promise.all([
         this.assets.loadSkybox(),
+        loader.load(levelNumber),
         this.assets.loadFBX('character.fbx'),
-        this.assets.loadFBX('computer.fbx'),
       ]);
-
       this.scene.background = sky;
+      this.scene.add(level.group);
+      this.scene.updateMatrixWorld(true);
+      this.levelStats = level.stats;
+      console.info('[level]', level.stats);
 
-      this.scene.add(character);
-      const box = fitToHeight(character, 1.8);
-      character.position.x -= 1.5;
-      console.info('[character] box after fit', box.min.toArray(), box.max.toArray());
-      this.scene.add(new THREE.BoxHelper(character, 0xffff00)); // debug: yellow box
-      this._setupAnimations(character);
-
-      this.scene.add(computer);
-      fitToHeight(computer, 1.2);
-      computer.position.x += 1.5;
-      this.updatables.push((dt) => { computer.rotation.y += dt * 0.5; });
+      // Put the character where the Unity player started (the active "Player" object)
+      const start = this._findPlayerStart(level.group);
+      if (start) {
+        const cc = start.userData.components.find((c) => c.type === 'CharacterController');
+        const height = cc ? cc.height : 2;
+        const pos = start.getWorldPosition(new THREE.Vector3());
+        const quat = start.getWorldQuaternion(new THREE.Quaternion());
+        this.scene.add(character);
+        fitToHeight(character, height);
+        character.position.x += pos.x;
+        character.position.z += pos.z;
+        character.position.y += pos.y + (cc ? cc.center[1] - cc.height / 2 : 0);
+        character.quaternion.copy(quat);
+        this._setupAnimations(character);
+        this.controls.target.copy(pos);
+        this.camera.position.copy(pos).add(new THREE.Vector3(0, 8, 12));
+        this.controls.update();
+      }
     } catch (err) {
       console.error(err);
       this.loadError = String(err.message || err);
     }
+  }
+
+  _findPlayerStart(root) {
+    let found = null;
+    root.traverse((n) => {
+      if (found || n.userData.tag !== 'Player' || !n.userData.components) return;
+      let visible = true;
+      for (let p = n; p; p = p.parent) visible = visible && p.visible;
+      if (visible && n.userData.components.some((c) => c.type === 'CharacterController')) found = n;
+    });
+    return found;
   }
 
   _setupAnimations(character) {
@@ -142,6 +164,8 @@ export class Game {
       let text = `SpaceLab v${VERSION}\n${this._fps} fps\nKeys: 0 base pose, 1 idle, 2 walk, 3 run`;
       if (this.clipsInfo) text += `\nClips: ${this.clipsInfo}`;
       if (this.currentName) text += `\nAnimation: ${this.currentName}`;
+      if (this.levelStats) text += `\nLevel ${this.levelNumber}: ${this.levelStats.meshes} meshes`;
+      if (this.levelStats && this.levelStats.missingMeshes.length) text += `\nMissing meshes: ${this.levelStats.missingMeshes.length}`;
       if (this.loadError) text += `\nLOAD ERROR: ${this.loadError}`;
       this.infoEl.textContent = text;
     }
