@@ -136,7 +136,22 @@ export class Game {
     fitToHeight(character, shape.height);
     this.holder.add(character);
     this._setupAnimations(character);
+    this._describeCharacter(character);
     this._syncPlayer();
+  }
+
+  /** Info for debugging (shown on screen): meshes, material groups and bones. */
+  _describeCharacter(character) {
+    const parts = [];
+    character.traverse((n) => {
+      if (!n.isMesh) return;
+      const g = n.geometry.groups.map((x) => `${x.materialIndex}:${x.start}+${x.count}`).join(' ');
+      const mats = (Array.isArray(n.material) ? n.material : [n.material]).map((m) => m.name).join('/');
+      const w = n.geometry.attributes.skinWeight;
+      parts.push(`${n.name}${n.isSkinnedMesh ? ` [skinned, ${n.skeleton.bones.length} bones]` : ''} mats ${mats} groups ${g} verts ${n.geometry.attributes.position.count}${w ? '' : ' NO WEIGHTS'}`);
+    });
+    this.charInfo = `Character meshes: ${parts.join(' | ')}\nKeys: P bind pose, M debug colors / wireframe`;
+    console.info('[character]', parts);
   }
 
   /** Copies the player state to the Three.js objects and the camera. */
@@ -149,7 +164,7 @@ export class Game {
       this.camera.position.set(c.position.x, c.position.y, c.position.z);
       this.camera.lookAt(c.lookAt.x, c.lookAt.y, c.lookAt.z);
     }
-    this._play(p.anim);
+    if (!this.charPaused) this._play(p.anim);
   }
 
   _findPlayerStart(root) {
@@ -193,7 +208,33 @@ export class Game {
     this.currentName = 'none (base pose)';
   }
 
+  /** Debug keys for the character: P = bind pose (no animation), M = flat shading / wireframe. */
+  _debugCharacter(kind) {
+    const root = this.holder && this.holder.children[0];
+    if (!root) return;
+    if (kind === 'pose') {
+      this.charPaused = !this.charPaused;
+      if (this.charPaused) {
+        if (this.mixer) this.mixer.stopAllAction();
+        this.currentAction = null;
+        root.traverse((n) => { if (n.isSkinnedMesh) n.skeleton.pose(); });
+      }
+      return;
+    }
+    this.charDebugMode = ((this.charDebugMode || 0) + 1) % 3; // 0 normal, 1 flat colors, 2 wireframe
+    root.traverse((n) => {
+      if (!n.isMesh) return;
+      if (!n.userData.origMaterial) n.userData.origMaterial = n.material;
+      if (this.charDebugMode === 0) n.material = n.userData.origMaterial;
+      else {
+        n.material = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide, wireframe: this.charDebugMode === 2 });
+      }
+    });
+  }
+
   _onKey(e) {
+    if (e.code === 'KeyP') this._debugCharacter('pose');
+    if (e.code === 'KeyM') this._debugCharacter('material');
     if (e.code === 'KeyO') { // free camera (mouse) for debugging
       this.freeCamera = !this.freeCamera;
       this.controls.enabled = this.freeCamera;
@@ -236,7 +277,8 @@ export class Game {
       this._fpsTime = 0;
       let text = `SpaceLab v${VERSION}\n${this._fps} fps\nWASD / arrows: move, Shift: run, Space: jump\nRight click / Alt: recenter camera\nO: free camera, K: show colliders`;
       if (this.clipsInfo) text += `\nClips: ${this.clipsInfo}`;
-      if (this.currentName) text += `\nAnimation: ${this.currentName}`;
+      if (this.currentName) text += `\nAnimation: ${this.currentName}${this.charPaused ? ' (P: paused, bind pose)' : ''}`;
+      if (this.charInfo) text += `\n${this.charInfo}`;
       if (this.levelStats) text += `\nLevel ${this.levelNumber}: ${this.levelStats.meshes} meshes`;
       if (this.levelStats && this.levelStats.missingMeshes.length) text += `\nMissing meshes: ${this.levelStats.missingMeshes.length}`;
       if (this.loadError) text += `\nLOAD ERROR: ${this.loadError}`;

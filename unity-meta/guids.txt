@@ -1,0 +1,282 @@
+Assets/Animations/computer.controller.meta:guid: 3dacddf52f5ba4f4db5c7c287140c09b
+Assets/Animations/computerPanelIdle.anim.meta:guid: 8f1d0e04933fa374996e8677b8ad3f74
+Assets/Animations/computerPanelOK.anim.meta:guid: ff33f1ea18781ed4f88085203f2c9d61
+Assets/Animations/Exitdoor_down.anim.meta:guid: 3523b0aaffe4ee34ea23a383665f8f31
+Assets/Animations/spriteExitDoorIdle.anim.meta:guid: f7be01b7c6c47b244af9a35d4a0d14a1
+Assets/Animations/spriteExitDoorOK.anim.meta:guid: 52ad0edce5d428f48a12bcea7e7c867c
+Assets/Animations.meta:guid: 66b16bba0a788d04d9ce9e9f355d7726
+Assets/Animators/character.controller.meta:guid: cc5310e5ec112e64ca6f3bb06bff00aa
+Assets/Animators/exitDoorOpen.controller.meta:guid: 284ac8147d9642141859c2bad167383c
+Assets/Animators/spriteComputerPanel.controller.meta:guid: 7a3e6c9e20fc3714a8b9e23234f39fd6
+Assets/Animators/spriteExitDoorOK.controller.meta:guid: 9c57c524bb76ec844af94517b8390795
+Assets/Animators.meta:guid: 0f6b14d6eaf561c4ea9abdd2abf05cb5
+Assets/Fonts/Akashi.ttf.meta:guid: 26071d2bbd0e9e84faa105f518a2162e
+Assets/Fonts.meta:guid: b67db32648950024d9eb4f6743d24b4c
+Assets/license_3rdpartynotice.txt.meta:guid: 0f40d9c2387e60d4db733af9e4f34bf3
+Assets/Materials/character/clothes_diffuse.mat.meta:guid: 42988a55ca3497d4da9764e74bf4ca5e
+Assets/Materials/character/skin_diffuse.mat.meta:guid: c723b352635443541ae3da64c63adb44
+Assets/Materials/character.meta:guid: 33da1e925c5f39e4da19345d86eb1e0c
+Assets/Materials/construccion/Material.mat.meta:guid: c7209d2c77ba46e4cacae63b96bc522c
+Assets/Materials/construccion/Material2.mat.meta:guid: 61fc3f521bb3d3b4ca1b24abb351d7b9
+Assets/Materials/construccion/Material_Transparent.mat.meta:guid: 9d91c95104c98d540b190d70f03fc0bf
+Assets/Materials/construccion.meta:guid: 4cd422d9dbd09994a966e22571a49768
+Assets/Materials/varios/Humo.mat.meta:guid: 8b15bfeb30543b149a478dd25b6efce3
+Assets/Materials/varios/Skybox.mat.meta:guid: 331ab492e0bd56447b23831749370d9b
+Assets/Materials/varios/Sprite.mat.meta:guid: e42020ef0a8eed6408c9cf35b3847201
+Assets/Materials/varios.meta:guid: 355d96bb997660b4398cf4e2f7411959
+Assets/Materials.meta:guid: 8ab62163610bec44ea662522229845c9
+Assets/Meshes/box.fbx.meta:guid: f7c37f016e8a07d49923f4411d010850
+Assets/Meshes/box_corner.fbx.meta:guid: 94b6ac780954aa648ad491d22a68bcad
+Assets/Meshes/cable.fbx.meta:guid: fc90e99182ca0f4419e45f90c9003923
+Assets/Meshes/cable_poste.fbx.meta:guid: 591eefa54e8e5754086dc3c8f60e4f8d
+Assets/Meshes/character.fbx.meta:guid: 7554e1262e436704782fc2a6da7a4113
+Assets/Meshes/computer.fbx.meta:guid: 459b1347ee724464788932430193ef7d
+Assets/Meshes/corner.fbx.meta:guid: 1a98be0341d4ee54fa575f9de59da1ab
+Assets/Meshes/exitdoor.fbx.meta:guid: d5337d87b272cf14591b18b41b7bc81c
+Assets/Meshes/farola.fbx.meta:guid: 2719bd81615bad0458272b4f1f63ab70
+Assets/Meshes/floor1.fbx.meta:guid: c1a6aa46a20dd15488cb067eb42efdb9
+Assets/Meshes/floor2.fbx.meta:guid: 8a5b2b0a76a6651408f8a791ea717fcc
+Assets/Meshes/granfoso_corner.fbx.meta:guid: 97ccc94cb6c9d2241b65dcd1757de2c9
+Assets/Meshes/granfoso_girador.fbx.meta:guid: d29c177c10c721344aff9423a2908641
+Assets/Meshes/granfoso_suelo.fbx.meta:guid: 0e04cc6b95e97f74c904ee14d813623a
+Assets/Meshes/granfoso_turnout.fbx.meta:guid: c6aa24ab4ce708143af9b2ce95201a4b
+Assets/Meshes/granfoso_wall1.fbx.meta:guid: 9aa88d53a4da89f40ac19b614b0035d5
+Assets/Meshes/granfoso_wall2.fbx.meta:guid: 8c39eafb92e459a4c91f99c1df7710a9
+Assets/Meshes/lasersbox.fbx.meta:guid: caba55bcfe6f16140ace053ec4e49a97
+Assets/Meshes/lasersrays.fbx.meta:guid: e0ceb52cb2498c34aadec35504722ff5
+Assets/Meshes/lucespuerta 1.fbx.meta:guid: cb4a0f6a76f546d4fbabc37106e37ce5
+Assets/Meshes/lucespuerta.fbx.meta:guid: 7e8d5bdb5d51f584a9f4f3f80dbd4d38
+Assets/Meshes/maceta.fbx.meta:guid: c46ab8078153934438fd066d767ce910
+Assets/Meshes/teleportbase.fbx.meta:guid: e033e36ee7d854e47895a2b373753e93
+Assets/Meshes/turnout.fbx.meta:guid: 6e634256591f7d74c99f1a34a9c3f836
+Assets/Meshes/ufo.fbx.meta:guid: 3099a61cfeff9304bbb20ac8c285db18
+Assets/Meshes/ufo_ray.fbx.meta:guid: 5f6199e9bb11cfe46b5c64b4982aab74
+Assets/Meshes/wall1.fbx.meta:guid: 6d71fe7af95ece6458c54dedefbb48b6
+Assets/Meshes/wall2.fbx.meta:guid: e3e122236a0833e49b16de4be825cdae
+Assets/Meshes/wall3.fbx.meta:guid: 3df05ed60410dd54a897646d274f1892
+Assets/Meshes/wallgenerator.fbx.meta:guid: 321f6785f61de634c9f5aa3331a742ab
+Assets/Meshes/wall_box.fbx.meta:guid: 4c8700dabaf74314b904294c11bd6737
+Assets/Meshes/wall_hole.fbx.meta:guid: fe9b58d787030c941ace73209d27e588
+Assets/Meshes.meta:guid: b2db75559feb8254f9df342d331dcd57
+Assets/Prefabs/construccion/BigFloor.prefab.meta:guid: 7ebbb19e6ae956f46a42f0580565616b
+Assets/Prefabs/construccion/Cross.prefab.meta:guid: e8064242ac1456e46ae6631da275fd99
+Assets/Prefabs/construccion/DeadEnd.prefab.meta:guid: 54cd8f06cb10d634a99bb589c75aaeaf
+Assets/Prefabs/construccion/ExitDoor.prefab.meta:guid: 638cb543e3a144d4c803840d5dbd7e37
+Assets/Prefabs/construccion/StraightCorridor.prefab.meta:guid: 04b525592507e2a4081f1cc8bf483766
+Assets/Prefabs/construccion/StraightCorridorLarge.prefab.meta:guid: d7dbd5293785dbb45912afd6a634fd40
+Assets/Prefabs/construccion/Teleport.prefab.meta:guid: 326c13cec53d4a84abd292091c66d2a6
+Assets/Prefabs/construccion/TSection.prefab.meta:guid: af53727f6b4e6eb44b5ae00b497d6b9b
+Assets/Prefabs/construccion/TurnOutCorridor.prefab.meta:guid: 018b27e0d29c28141b601334859bc9ff
+Assets/Prefabs/construccion/wall_hole.prefab.meta:guid: 70f2f6e8a6febcc4bbc3936854e20c8c
+Assets/Prefabs/construccion.meta:guid: 99228f193e097cb48a55c70f04e826ba
+Assets/Prefabs/decoracion/farola.prefab.meta:guid: f4320a9efb98c684895b0766b3570a5c
+Assets/Prefabs/decoracion/farolasPasillo.prefab.meta:guid: 2e975c530ea46f74ab2cb060d016be00
+Assets/Prefabs/decoracion/farolasSala.prefab.meta:guid: 73b66c5065807e244a02b6216d4619a7
+Assets/Prefabs/decoracion/lucesPasillo.prefab.meta:guid: 61d09a3e91c9b63479d0df9a567118f6
+Assets/Prefabs/decoracion/maceta.prefab.meta:guid: 6602ece1ecae51e469b87fe0fb1750be
+Assets/Prefabs/decoracion.meta:guid: 556965e1fb9c91045963df07f6392f48
+Assets/Prefabs/enemigos/LaserMachine.prefab.meta:guid: e35728840e4aa6c4ea66ff3af323be8d
+Assets/Prefabs/enemigos/Ufo.prefab.meta:guid: ade7dfc96f2028441a62d9aee59b22a2
+Assets/Prefabs/enemigos.meta:guid: 2c31778a3c67bf54d84d2bb104a5ee86
+Assets/Prefabs/items/Computer.prefab.meta:guid: a12e821044fc3db4a98e9191bb38d658
+Assets/Prefabs/items.meta:guid: 2a3a323507ea9b641918703705b34896
+Assets/Prefabs/logica/GameManager.prefab.meta:guid: 2485a6b9ac1eae74ca54b840f45c43f1
+Assets/Prefabs/logica/InitLevel.prefab.meta:guid: 49c656f23b45ca144b6bf41c02b7c91d
+Assets/Prefabs/logica.meta:guid: 01de88f3dc6b6e84a80d51980408901b
+Assets/Prefabs/luces/lucesFosaLight.prefab.meta:guid: 1362e0254cf3ff24d9aca67b2d8e6cd5
+Assets/Prefabs/luces/lucesPasilloLight.prefab.meta:guid: 12a5589ef5b58d7498e31a5e620ff71b
+Assets/Prefabs/luces/lucesSalaLight.prefab.meta:guid: a7f1bf3b000d2c546aa93f55a68185b0
+Assets/Prefabs/luces/luzTeleportLight.prefab.meta:guid: 316d62b53caadea46a0f8f8dbe1c93e4
+Assets/Prefabs/luces.meta:guid: 435045054289cce4c95a1cbbe607657b
+Assets/Prefabs/particulas/Gases.prefab.meta:guid: c8e20e0da769d684e8d8ca22d27920fe
+Assets/Prefabs/particulas/GasesGranFoso.prefab.meta:guid: 9f3fbd125066c704ea85e642bba1e55a
+Assets/Prefabs/particulas/Smoke.prefab.meta:guid: 04da0370924bde0418357d46f3158319
+Assets/Prefabs/particulas.meta:guid: 07b73bddda1011f43aad7bf578ac87eb
+Assets/Prefabs/sprites/SpriteComputerPanel.prefab.meta:guid: 07e0d9376218f8040a38a796d0d9f29c
+Assets/Prefabs/sprites/SpriteExitDoorPanel.prefab.meta:guid: 8ca5b010ece65284d9bea192b240f2b2
+Assets/Prefabs/sprites.meta:guid: 60c1fdfe7b2183349970c8f5d594ecde
+Assets/Prefabs.meta:guid: b30655a821a8c8b488473b67503d69bb
+Assets/readme_SDK.txt.meta:guid: 5373c754909a4a14bbd9c48db44e10e6
+Assets/Scenes/niveles/scene1/LightmapFar-0.exr.meta:guid: 651001bafba9db348b7489fac3d38293
+Assets/Scenes/niveles/scene1.meta:guid: 8c0c19f1f844fa540b1cc3d3718170bb
+Assets/Scenes/niveles/scene1.unity.meta:guid: 5f8955c4d81948f40889d58c11214362
+Assets/Scenes/niveles/scene2/LightmapFar-0.exr.meta:guid: 823ae12bec2bbd6478a8b36430066cc8
+Assets/Scenes/niveles/scene2.meta:guid: 7175f56b37e06de40810b48f0fb647aa
+Assets/Scenes/niveles/scene2.unity.meta:guid: 6bebb46334bb9604784aba395fce020e
+Assets/Scenes/niveles/scene3/LightmapFar-0.exr.meta:guid: 2a0a44b16fea97d4d8fd795ae07aba3c
+Assets/Scenes/niveles/scene3.meta:guid: b1a0065e1516c704caa4f02402ba1b5a
+Assets/Scenes/niveles/scene3.unity.meta:guid: d0bfd897f0a1eda4cbeb2f2e1f21b63f
+Assets/Scenes/niveles.meta:guid: beb877d92011147469860be8c4695823
+Assets/Scenes/portadas/congratulations.unity.meta:guid: 25541506df47b3b4793d711328c7697d
+Assets/Scenes/portadas/credits.unity.meta:guid: aff9320ac47d9314aac5921994285f63
+Assets/Scenes/portadas/intromenu.unity.meta:guid: 66802bd03504d0b4cb217f96336617de
+Assets/Scenes/portadas/loadinglevel.unity.meta:guid: 8ad824323709fb443a1fe862dbc34530
+Assets/Scenes/portadas/niveles.unity.meta:guid: d1e7f60803f13784fb2f7decc1809656
+Assets/Scenes/portadas/tutorial_pag1.unity.meta:guid: 7bcc0b92e21f50c46a5d98c449d7bdd7
+Assets/Scenes/portadas/tutorial_pag2.unity.meta:guid: a1332f28ff784774e8d42aa1bdc1a63d
+Assets/Scenes/portadas/tutorial_pag3.unity.meta:guid: 5260d2b144f06dd46ba246f30d676d09
+Assets/Scenes/portadas/tutorial_pag4_mobile.unity.meta:guid: d142806fadd8f4e47bc62aeeda5c0cef
+Assets/Scenes/portadas/tutorial_pag4_pc.unity.meta:guid: 69cb8821c96ab014884bea249d466b7a
+Assets/Scenes/portadas.meta:guid: beae1d574ce2c61458fb210dcce89f1b
+Assets/Scenes.meta:guid: 807761e86561fb141b470dce9a0981a1
+Assets/Scripts/Computer.cs.meta:guid: 44cbafe34a7fa984e9660fbe0ee04936
+Assets/Scripts/DeathFloor.cs.meta:guid: 25d17efa8b462ca4b99fd94c54f728e0
+Assets/Scripts/Exitdoor.cs.meta:guid: 5f3ba3592c957b343b1aa1e0f0ea5f65
+Assets/Scripts/ExitMobile.cs.meta:guid: 32788252cf406cc4da1d5e1fe2ad5870
+Assets/Scripts/GameManager.cs.meta:guid: 3e1860969ab31ae44ba3db1c00101360
+Assets/Scripts/Girador.cs.meta:guid: 9a83c01931a708443abdff853da8c8cb
+Assets/Scripts/HUD.cs.meta:guid: adbe9b5702661bc4cb42bfbca412a557
+Assets/Scripts/InitLevel.cs.meta:guid: 069857ec36e65934e9235c38297972a9
+Assets/Scripts/Laser.cs.meta:guid: fbfe5a4311b9a0144ba342f74b97822e
+Assets/Scripts/portadas/GeneralConfig.cs.meta:guid: 466f960821a1d4549b0d3eaa1d463085
+Assets/Scripts/portadas/LevelsIcons.cs.meta:guid: f80182e13c4f7ca43958c55e2c90f7b2
+Assets/Scripts/portadas/LoadingLevel.cs.meta:guid: d4abf6132554e3c4e88df8148d88e34b
+Assets/Scripts/portadas/MenuBackBtn.cs.meta:guid: 6d9ea71e05b2d1043a99e3ea05d9f36a
+Assets/Scripts/portadas/MenuCreditsBtn.cs.meta:guid: 4897ed60d9865f145b7e2fd87c6847d3
+Assets/Scripts/portadas/MenuStartBtn.cs.meta:guid: d45ef367cc9190c49960a1f1750a9a59
+Assets/Scripts/portadas/MobileMenuBack.cs.meta:guid: ac99e6c99b06e304bb0fb0a71ff6086f
+Assets/Scripts/portadas/NivelesNivelBtn.cs.meta:guid: 4059c36721761d549a8301e4f0c7d983
+Assets/Scripts/portadas/TutorialFinishBtn.cs.meta:guid: 163fe7fc63ca01840b45fe061b3967e1
+Assets/Scripts/portadas/TutorialPag.cs.meta:guid: 991d6fef15188b2449d4b9e9e6fbff1c
+Assets/Scripts/portadas.meta:guid: fd23113f34f7a1a49a33529acfb5fa78
+Assets/Scripts/Teleport.cs.meta:guid: 2a55b220cb31ae14bbed4d840ad729ce
+Assets/Scripts/Ufo.cs.meta:guid: cb9e7aaee71b7c84abb13d384e58b96f
+Assets/Scripts.meta:guid: b8411cbdce370ef439dcc2c5f1f3fdc2
+Assets/Sounds/computer.mp3.meta:guid: 93a2e52af72d92f4393d57531a2b6048
+Assets/Sounds/livelost.mp3.meta:guid: befaba0d9bed98c4caec08f55700008b
+Assets/Sounds/music1_loop.ogg.meta:guid: 38d7cdf2a524da3469f9d180e3b77ac8
+Assets/Sounds/music2_loop.ogg.meta:guid: ce1cf0df67dbb9c4d80365935cd3209a
+Assets/Sounds/music_congratulations.ogg.meta:guid: 1733e98316d4a224a99959dc07185199
+Assets/Sounds/music_credits.ogg.meta:guid: 774505def9ae26f4888d46c0550c7990
+Assets/Sounds/music_menu.ogg.meta:guid: 02cafef553a9c5b44acc86b94ebcb72f
+Assets/Sounds/opendoor.mp3.meta:guid: b31f2fb7c3722364cb7a75bb911ee21b
+Assets/Sounds/select.mp3.meta:guid: f0e2cff930d3c3c46a18c317019a3479
+Assets/Sounds.meta:guid: ded8f5e28fe10184c837474993d30e2a
+Assets/Sprites/spritesheet1.png.meta:guid: 5f12894665c75b6439c63461297c186d
+Assets/Sprites/spritesheet_humo.png.meta:guid: d1d6a23fa4c86e741a40d94fec7d3aee
+Assets/Sprites.meta:guid: 6179645cfd2322c4d94e003e04910e10
+Assets/Standard Assets/Character Controllers/3rd Person Controller.prefab.meta:guid: 2314ce3a3eecf4816bad3c9eca4de2e1
+Assets/Standard Assets/Character Controllers/First Person Controller.prefab.meta:guid: 9d4133d5d30b644bd87802a347eaccbe
+Assets/Standard Assets/Character Controllers/Sources/PrototypeCharacter/Constructor.FBX.meta:guid: 449b48f7eb5d87a4baaa5fb73f875a59
+Assets/Standard Assets/Character Controllers/Sources/PrototypeCharacter/Materials/constructor_done.mat.meta:guid: ca49380a71a2bb64c830d06bd421b9d1
+Assets/Standard Assets/Character Controllers/Sources/PrototypeCharacter/Materials.meta:guid: e53c8c3dcc4ff59438bc9e86cb45c3f6
+Assets/Standard Assets/Character Controllers/Sources/PrototypeCharacter/Textures/constructor_diffuse.png.meta:guid: 97b050d43ac7c4d2b9f6cbb587650761
+Assets/Standard Assets/Character Controllers/Sources/PrototypeCharacter/Textures/constructor_normals.png.meta:guid: 531c14f8d5cdc4e5baa83ee6e16f783a
+Assets/Standard Assets/Character Controllers/Sources/PrototypeCharacter/Textures.meta:guid: b365e6042890d4b1987423ed6bb8a08c
+Assets/Standard Assets/Character Controllers/Sources/PrototypeCharacter.meta:guid: c81df2918c80c054ca3d436e62090893
+Assets/Standard Assets/Character Controllers/Sources/Scripts/CharacterMotor.js.meta:guid: 0ab79d7f243824f5d9826bd83522c8df
+Assets/Standard Assets/Character Controllers/Sources/Scripts/FPSInputController.js.meta:guid: 60bca8f58a0b8478e946e6e86658cb29
+Assets/Standard Assets/Character Controllers/Sources/Scripts/MouseLook.cs.meta:guid: 68ec2fe99d1108b9d0006a298d76c639
+Assets/Standard Assets/Character Controllers/Sources/Scripts/PlatformInputController.js.meta:guid: da93ddd6928094e24bb1f3f665f143d3
+Assets/Standard Assets/Character Controllers/Sources/Scripts/ThirdPersonCamera.js.meta:guid: 0b167d00b3108411a8a963cba5ddde1b
+Assets/Standard Assets/Character Controllers/Sources/Scripts/ThirdPersonController.js.meta:guid: 1d5ac211a643e447ca78c2d794a16381
+Assets/Standard Assets/Character Controllers/Sources/Scripts.meta:guid: f781c091d1c8647c380d5230adfaee54
+Assets/Standard Assets/Character Controllers/Sources.meta:guid: 7e0b0a994d8934541a387e092630b5db
+Assets/Standard Assets/Character Controllers.meta:guid: 54216e9ed42974e30967824b7f0b2806
+Assets/Standard Assets (Mobile)/Control Setups/CameraRelativeSetup.unity.meta:guid: cb1deda9a5ffe44f28e011f5937746ed
+Assets/Standard Assets (Mobile)/Control Setups/FirstPersonSetup.unity.meta:guid: 741cfa51a2f6d4d959a5464ee822a141
+Assets/Standard Assets (Mobile)/Control Setups/FirstPersonTilt.unity.meta:guid: b8cf65c6c5e4a4d88b7a16e847002999
+Assets/Standard Assets (Mobile)/Control Setups/PlayerRelativeSetup.unity.meta:guid: c83ddef6675f649e8ba048d976753858
+Assets/Standard Assets (Mobile)/Control Setups/SidescrollSetup.unity.meta:guid: 66c8d8b89e1ed4a37bece5045a6aa889
+Assets/Standard Assets (Mobile)/Control Setups/TapControlSetup.unity.meta:guid: 8639c51f3dbb24cc8a7f94732f73859d
+Assets/Standard Assets (Mobile)/Control Setups.meta:guid: 535bd66f1f12441f6a3ec2969dfee5ab
+Assets/Standard Assets (Mobile)/Materials/grid.mat.meta:guid: 5317f3e76581f4165b16ede5caa5f14b
+Assets/Standard Assets (Mobile)/Materials/gridFor2D.mat.meta:guid: 26ebd1f47951f4434892c20bcd5e3861
+Assets/Standard Assets (Mobile)/Materials/skybox.mat.meta:guid: 93074eff559734934be9005d139a9ad5
+Assets/Standard Assets (Mobile)/Materials.meta:guid: afebce546543c41b6ba72397a76314e3
+Assets/Standard Assets (Mobile)/Prefabs/2D Side Scroller.prefab.meta:guid: 0c2d8569031f5454cbbac2c772e2767d
+Assets/Standard Assets (Mobile)/Prefabs/Camera Relative Controls.prefab.meta:guid: 3939554270ba34e3c84bf1bc113cf5b7
+Assets/Standard Assets (Mobile)/Prefabs/Dual Joysticks.prefab.meta:guid: ae87fe833d7664e83a80974a8870690d
+Assets/Standard Assets (Mobile)/Prefabs/Dual TouchPads.prefab.meta:guid: a51e29524d0a242e99bcf94b8a3265ab
+Assets/Standard Assets (Mobile)/Prefabs/First Person Controls.prefab.meta:guid: 879566529466b4acb9d9b47176abe812
+Assets/Standard Assets (Mobile)/Prefabs/First Person Tilt Controls.prefab.meta:guid: 8d25458fdca034e36a127e4b135a0206
+Assets/Standard Assets (Mobile)/Prefabs/Player Relative Controls.prefab.meta:guid: 96571475093fb4359b11d284aff148d9
+Assets/Standard Assets (Mobile)/Prefabs/Roll A Ball.prefab.meta:guid: 8d2d948c5443d4b68a74883e055e219b
+Assets/Standard Assets (Mobile)/Prefabs/Single Joystick.prefab.meta:guid: 0215cddee2d284e9c9bda1dbe42f829c
+Assets/Standard Assets (Mobile)/Prefabs/Single TouchPad.prefab.meta:guid: e913213c3756a4392be576ca36eb9b50
+Assets/Standard Assets (Mobile)/Prefabs/Skybox.fbx.meta:guid: 199ba61b407d7435aa1a5551f0844272
+Assets/Standard Assets (Mobile)/Prefabs/TapToMove Controls.prefab.meta:guid: bcf1704da4dcf4ca7be0acf40020b0c4
+Assets/Standard Assets (Mobile)/Prefabs.meta:guid: 9d83e69ef8acb4f20832f9b0610058f3
+Assets/Standard Assets (Mobile)/Scripts/CameraRelativeControl.js.meta:guid: bc909e8e75e9e47b495b8655f87a7922
+Assets/Standard Assets (Mobile)/Scripts/FirstPersonControl.js.meta:guid: 1fdce4427d10e48a0a07774903b01f73
+Assets/Standard Assets (Mobile)/Scripts/FollowTransform.js.meta:guid: b25d02d5454ac4210abfe815eb4dbe40
+Assets/Standard Assets (Mobile)/Scripts/Joystick.js.meta:guid: 0fb10c595af974ea6ba0313a749d5c55
+Assets/Standard Assets (Mobile)/Scripts/ObliqueNear.js.meta:guid: 9abe0941a9bf44931956d406439d7aca
+Assets/Standard Assets (Mobile)/Scripts/PlayerRelativeControl.js.meta:guid: d51e7d424e4564f9db26e6b4bdd3e9ac
+Assets/Standard Assets (Mobile)/Scripts/RollABall.js.meta:guid: ac56a5cf2102746809f706431073ccee
+Assets/Standard Assets (Mobile)/Scripts/RotationConstraint.js.meta:guid: c1259bb9bcb6e481ba03f5d0337633d5
+Assets/Standard Assets (Mobile)/Scripts/SidescrollControl.js.meta:guid: fed124f80617b40f0917847d5c87ca73
+Assets/Standard Assets (Mobile)/Scripts/SmoothFollow2D.js.meta:guid: 8947ae06ca3df4fcc9786140c1d86f15
+Assets/Standard Assets (Mobile)/Scripts/tapcontrol.js.meta:guid: 4eb73708914564698b03178372f5b8ba
+Assets/Standard Assets (Mobile)/Scripts/ZoomCamera.js.meta:guid: 01049279b64ae427f91486bbcea77beb
+Assets/Standard Assets (Mobile)/Scripts.meta:guid: ef4c125ff680143769b0c8bf1f1bd828
+Assets/Standard Assets (Mobile)/Shaders/Lightmap Shaders (Legacy)/Mobile Lightmap AlphaTest.shader.meta:guid: e14df94c1bd5d475bb0fb92fefa1f00d
+Assets/Standard Assets (Mobile)/Shaders/Lightmap Shaders (Legacy)/Mobile Lightmap Only.shader.meta:guid: 9732e64c49e904ff2a10fc7794607fcf
+Assets/Standard Assets (Mobile)/Shaders/Lightmap Shaders (Legacy)/Mobile Lightmap Reflective.shader.meta:guid: af040a092e2114e9fbd6fab7402e066d
+Assets/Standard Assets (Mobile)/Shaders/Lightmap Shaders (Legacy).meta:guid: ca1d9a879c25e42b290503fe320c9347
+Assets/Standard Assets (Mobile)/Shaders/Miscellaneous Shaders/Mobile Background.shader.meta:guid: c494c890ec8664fd9aa7d66ebfa1a7e6
+Assets/Standard Assets (Mobile)/Shaders/Miscellaneous Shaders/Mobile Detail.shader.meta:guid: 5baab583450424889aad7f3f40e9fba5
+Assets/Standard Assets (Mobile)/Shaders/Miscellaneous Shaders.meta:guid: 44b96e31814694584b1c35fec7dc42ea
+Assets/Standard Assets (Mobile)/Shaders/Particle Shaders/Mobile Multiply Culled.shader.meta:guid: 830b18403dea84783b74345dea9f0606
+Assets/Standard Assets (Mobile)/Shaders/Particle Shaders/Mobile Particles Additive Culled.shader.meta:guid: 73b473491223046b3bccb04fdb29c994
+Assets/Standard Assets (Mobile)/Shaders/Particle Shaders.meta:guid: da8e93600ecdd4feca9cfb553a314e48
+Assets/Standard Assets (Mobile)/Shaders/Vertex Colored Shaders/Mobile Transparent Vertex Color.shader.meta:guid: e1f50dc041f1545edbb228f8daea22a1
+Assets/Standard Assets (Mobile)/Shaders/Vertex Colored Shaders/Mobile Vertex Colored.shader.meta:guid: 0e7ed4fbd9924480bbb918e339c570e6
+Assets/Standard Assets (Mobile)/Shaders/Vertex Colored Shaders.meta:guid: 28776ef410870442b8d64e6ce9a3d548
+Assets/Standard Assets (Mobile)/Shaders.meta:guid: 244c19b648f194fcd8b57d4d66403c4e
+Assets/Standard Assets (Mobile)/Textures/grid.psd.meta:guid: 8b23c9e3952e246c180a8080104ae60b
+Assets/Standard Assets (Mobile)/Textures/JoystickThumb.psd.meta:guid: ab5bb3eb247a4492fa9900f6ac0db050
+Assets/Standard Assets (Mobile)/Textures/skyBox.tga.meta:guid: c7823349d54534cd1b3078b6bf95c848
+Assets/Standard Assets (Mobile)/Textures/ThumbAreaLeft.psd.meta:guid: 400c2f66c145548b6a08e6ac69655ea2
+Assets/Standard Assets (Mobile)/Textures/ThumbAreaRight.psd.meta:guid: 902873f1336b14507b2ae690b68ecc51
+Assets/Standard Assets (Mobile)/Textures.meta:guid: 81f90a056484f433badb55a7c96de025
+Assets/Standard Assets (Mobile).meta:guid: 99d520f65e8a545cf966b5179ed81e2c
+Assets/Standard Assets.meta:guid: d9bdb9038e6ef8b4cbdfc1ceafa10ef3
+Assets/Textures/botones/btn_back.png.meta:guid: 04199289979ba154f8076a611b11aa51
+Assets/Textures/botones/btn_credits.png.meta:guid: 65c6a116d1ed6824a90f2c60de62b420
+Assets/Textures/botones/btn_finish.png.meta:guid: a7299e83691a43a4d834426b4f7d87b4
+Assets/Textures/botones/btn_next.png.meta:guid: d78303043a6a1be449ecdb98fa40c98c
+Assets/Textures/botones/btn_start.png.meta:guid: d5593b4b0df42584e88a73645aa3956a
+Assets/Textures/botones/btn_tutorial.png.meta:guid: 2b2d95fcff284ef46b51f11a7757057d
+Assets/Textures/botones/btn_tutorial_exit.png.meta:guid: f29f9baa6d90a4542894984ed771ce15
+Assets/Textures/botones.meta:guid: 0767d2b139f32a343988c196897b727c
+Assets/Textures/character/clothes_diffuse.png.meta:guid: 9e9327b99d64a1b4a8b81cb67fd75475
+Assets/Textures/character/skin_diffuse.png.meta:guid: 3a3d8a390c98a0342846165421262b78
+Assets/Textures/character.meta:guid: fd0238d34f77d5542828d36eff4df409
+Assets/Textures/hud/game_over.png.meta:guid: 8c874ba41c660dc469ac3e2f4fc5aac2
+Assets/Textures/hud/hud_computers_off.png.meta:guid: 78a613fc70822cc4fa2db634f67bd2a3
+Assets/Textures/hud/hud_computers_on.png.meta:guid: 94bd7fbb68779a348ad444086eb55f99
+Assets/Textures/hud/hud_hearts.png.meta:guid: 4909b70a1bb11b842b95614bf321f1a4
+Assets/Textures/hud.meta:guid: 3999e507e630db943ba2e9205c980ca1
+Assets/Textures/iconos/info_gamecompleted.png.meta:guid: a22a7caf30bf9b54d8c80e1f0b4ae45e
+Assets/Textures/iconos/nivel_candado.png.meta:guid: f6501be98d532bc4188e4eb70fed13f2
+Assets/Textures/iconos/stars_bronze.png.meta:guid: 9f71ee770eadc024c9cccff08d3077e3
+Assets/Textures/iconos/stars_gold.png.meta:guid: 29102f05decb3db43b09a8cdbe066573
+Assets/Textures/iconos/stars_silver.png.meta:guid: 59d5ba362b978d248859afe9d1e509f7
+Assets/Textures/iconos.meta:guid: 0dd16d4544d3cd841944d7888e46f794
+Assets/Textures/icons_android/icon144.png.meta:guid: f4df86737e76c644eae6d7ee3248ad10
+Assets/Textures/icons_android/icon36.png.meta:guid: 893dd0559d9025048aa655d334ec8f80
+Assets/Textures/icons_android/icon48.png.meta:guid: 92900772759ccc046b05e1e86858d003
+Assets/Textures/icons_android/icon72.png.meta:guid: 284ea3f9311668b4e85847eb5d0555d6
+Assets/Textures/icons_android/icon96.png.meta:guid: 86933f6a4388ed940a3287da4ac10816
+Assets/Textures/icons_android.meta:guid: e29c8194eb6df5c41a26c2fdd29b530f
+Assets/Textures/objetos1Col.png.meta:guid: d629d75d5530d8947bddd277c2831615
+Assets/Textures/objetos2ColSpec.png.meta:guid: 33930e7c0f97f6945a89d4b02e3bd7ee
+Assets/Textures/portadas/congratulations.png.meta:guid: 4c57c8a0549b9364d80b25070ef4d3da
+Assets/Textures/portadas/creditos.png.meta:guid: 694b423e05579ba4da06b4d919b68643
+Assets/Textures/portadas/niveles.png.meta:guid: 644701ba409e82248aee1dc608b1c4de
+Assets/Textures/portadas/portada.png.meta:guid: 2b5fcd3edc53c024ea96b64ddd8b17d2
+Assets/Textures/portadas/tutorial_pag1.png.meta:guid: 3e198aabf0185df42be89c682209ab86
+Assets/Textures/portadas/tutorial_pag2.png.meta:guid: 958229829edb084428e448acfb29c4eb
+Assets/Textures/portadas/tutorial_pag3.png.meta:guid: e953d937173da7f4e9f8c2529d9a9836
+Assets/Textures/portadas/tutorial_pag4_mobile.png.meta:guid: 09fffcdbaab0bc9488876f051e5aefb5
+Assets/Textures/portadas/tutorial_pag4_pc.png.meta:guid: 9ea5d2eff09b16f43aa61ab6caf71a75
+Assets/Textures/portadas.meta:guid: 1d1e6681df9394c4aacb5e000623891e
+Assets/Textures/skybox/spacestars_back6.png.meta:guid: 0067b976002ae244bba8d6cc1e29ace3
+Assets/Textures/skybox/spacestars_bottom4.png.meta:guid: c7506ae3c410a1145b2e536001ca4992
+Assets/Textures/skybox/spacestars_front5.png.meta:guid: dbaf1a9687e99df42bf90665e0971296
+Assets/Textures/skybox/spacestars_left2.png.meta:guid: d0d10b571406415429d9a172702cba13
+Assets/Textures/skybox/spacestars_right1.png.meta:guid: bf4df2d139f5a28468cc4c59febfc207
+Assets/Textures/skybox/spacestars_top3.png.meta:guid: 2a08e1a94d4a9524e94419c097bfdc14
+Assets/Textures/skybox.meta:guid: 1cae0a518f1d35b4cb17c5c3275f3aad
+Assets/Textures.meta:guid: 300bf9f2537456043bad48e30b5bc8d4
