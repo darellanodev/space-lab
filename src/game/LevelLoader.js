@@ -21,6 +21,8 @@ export class LevelLoader {
     this.tgaLoader = new TGALoader();
     this.materialDefs = {};
     this.stats = { nodes: 0, meshes: 0, missingMeshes: [] };
+    this.colliders = []; // solid boxes: { obj, center, size }
+    this.triggers = []; // trigger boxes (computers, exit door, ...): { obj, center, size }
   }
 
   async load(levelNumber) {
@@ -43,8 +45,11 @@ export class LevelLoader {
 
     const group = new THREE.Group();
     group.name = `level${levelNumber}`;
-    for (const root of level.roots) group.add(this._buildNode(root));
-    return { group, settings: level.settings, stats: this.stats, data: level };
+    for (const root of level.roots) group.add(this._buildNode(root, true));
+    return {
+      group, settings: level.settings, stats: this.stats, data: level,
+      colliders: this.colliders, triggers: this.triggers,
+    };
   }
 
   async _loadGeometries(file) {
@@ -100,7 +105,7 @@ export class LevelLoader {
     return tex;
   }
 
-  _buildNode(n) {
+  _buildNode(n, parentActive) {
     this.stats.nodes++;
     const obj = new THREE.Object3D();
     obj.name = n.name;
@@ -108,6 +113,7 @@ export class LevelLoader {
     obj.quaternion.set(n.rot[0], n.rot[1], n.rot[2], n.rot[3]);
     obj.scale.fromArray(n.scale);
     obj.visible = n.active;
+    const active = parentActive && n.active;
     obj.userData = { unityId: n.id, tag: n.tag, layer: n.layer, components: n.components };
 
     let geometry = null;
@@ -116,6 +122,9 @@ export class LevelLoader {
       if (c.type === 'MeshFilter' && c.mesh && c.mesh.file) geometry = this._geometry(c.mesh);
       else if (c.type === 'MeshRenderer') mats = c.materials;
       else if (c.type === 'Light') this._addLight(obj, c);
+      else if (c.type === 'BoxCollider' && active) {
+        (c.trigger ? this.triggers : this.colliders).push({ obj, center: c.center, size: c.size });
+      }
     }
     if (geometry) {
       const material = mats.length > 1 ? mats.map((m) => this._material(m)) : this._material(mats[0]);
@@ -124,7 +133,7 @@ export class LevelLoader {
       obj.add(mesh);
       this.stats.meshes++;
     }
-    for (const k of n.children) obj.add(this._buildNode(k));
+    for (const k of n.children) obj.add(this._buildNode(k, active));
     return obj;
   }
 

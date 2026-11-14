@@ -17,8 +17,8 @@ Each delivery: `spacelab-v0-X-0.zip` with `manifest.json` and `package.json` in 
 |---|---|---|
 | 0.1.0 | Vite + Three.js skeleton, scene, camera, game loop, manifest | ✅ |
 | 0.2.0 | FBX model loader (GLB later) + space skybox + character animations demo | ✅ |
-| 0.3.0 | Unity scene → JSON level importer (`tools/`) and loading of levels 1–3 (geometry, materials, lights) | ✅ (needs textures) |
-| 0.4.0 | Character: movement, camera and wall collisions | ☐ |
+| 0.3.0 | Unity scene → JSON level importer (`tools/`) and loading of levels 1–3 (geometry, materials, lights) | ✅ |
+| 0.4.0 | Character: movement (walk / run / jump), follow camera and collisions with walls and floor | ✅ |
 | 0.5.0 | Computers, exit door, teleport and end of level | ☐ |
 | 0.6.0 | GameManager: lives, level reset, Game Over | ☐ |
 | 0.7.0 | Dangers: lava (DeathFloor) and lasers | ☐ |
@@ -36,11 +36,12 @@ Each delivery: `spacelab-v0-X-0.zip` with `manifest.json` and `package.json` in 
 ## Waiting for files
 - [x] All models (`Assets/Meshes`, `.fbx`) and character / skybox textures
 - [x] Scenes, prefabs, materials and animations (converted to text with `binary2text.exe`)
-- [ ] `guids.txt` (GUID index of the whole project, see README)
-- [ ] `Assets/Textures` (all textures, flat copy is fine) and `Assets/Sounds`
-- [ ] Unity Standard Assets scripts used by the player (`Assets/Standard Assets/Character Controllers/Sources/Scripts`)
-- [ ] Sounds (`Assets/Sounds`)
-- [ ] Character controls and camera (read from the scene scripts)
+- [x] `guids.txt` (GUID index of the whole project, in `unity-meta/`)
+- [x] Level textures and sprites (`public/textures/`)
+- [x] Sounds (`public/audio/`, not used yet)
+- [ ] Menu / HUD textures (`ui` part)
+- [x] Unity Standard Assets scripts used by the player
+- [x] Character controls and camera (ported from `ThirdPersonController.js` and `ThirdPersonCamera.js`)
 
 ## Technical decisions
 - Vite + Three.js (ES modules). Own collisions (AABB / capsule) at first; Rapier if needed.

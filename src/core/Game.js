@@ -2,9 +2,15 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Assets, fitToHeight } from './Assets.js';
 import { LevelLoader, LIGHT_SCALE } from '../game/LevelLoader.js';
+import { CollisionWorld } from '../game/Collision.js';
+import { PlayerController, FollowCamera } from '../game/PlayerController.js';
+import { Input } from '../game/Input.js';
 
 /* global __APP_VERSION__ */
 export const VERSION = __APP_VERSION__;
+
+// If the character walks sideways or backwards, change this angle (radians): Math.PI, Math.PI / 2 ...
+const MODEL_YAW_OFFSET = 0;
 
 export class Game {
   constructor(canvas, infoEl) {
@@ -23,6 +29,7 @@ export class Game {
     this.camera.position.set(0, 2.2, 5);
 
     this.controls = new OrbitControls(this.camera, canvas);
+    this.controls.enabled = false;
     this.controls.target.set(0, 1, 0);
     this.controls.update();
 
@@ -35,6 +42,12 @@ export class Game {
     this.mixer = null;
     this.actions = {};
     this.currentAction = null;
+
+    this.input = new Input();
+    this.player = null; // PlayerController (Unity coordinates)
+    this.holder = null; // Three.js group with the character model
+    this.freeCamera = false;
+    this.colliderDebug = null;
 
     this._buildLights();
     window.addEventListener('resize', () => this._resize());
@@ -66,26 +79,77 @@ export class Game {
 
       // Put the character where the Unity player started (the active "Player" object)
       const start = this._findPlayerStart(level.group);
-      if (start) {
-        const cc = start.userData.components.find((c) => c.type === 'CharacterController');
-        const height = cc ? cc.height : 2;
-        const pos = start.getWorldPosition(new THREE.Vector3());
-        const quat = start.getWorldQuaternion(new THREE.Quaternion());
-        this.scene.add(character);
-        fitToHeight(character, height);
-        character.position.x += pos.x;
-        character.position.z += pos.z;
-        character.position.y += pos.y + (cc ? cc.center[1] - cc.height / 2 : 0);
-        character.quaternion.copy(quat);
-        this._setupAnimations(character);
-        this.controls.target.copy(pos);
-        this.camera.position.copy(pos).add(new THREE.Vector3(0, 8, 12));
-        this.controls.update();
-      }
+      if (start) this._createPlayer(start, character, level);
     } catch (err) {
       console.error(err);
       this.loadError = String(err.message || err);
     }
+  }
+
+  /** Builds the collision world and the player from the Unity "Player" object. */
+  _createPlayer(start, character, level) {
+    // Collision boxes: the world matrix of each object already is in Three.js space
+    const world = new CollisionWorld();
+    const debug = new THREE.Group();
+    debug.visible = false;
+    const wire = new THREE.MeshBasicMaterial({ color: 0x00ff66, wireframe: true });
+    const m = new THREE.Matrix4();
+    const pos = new THREE.Vector3();
+    const quat = new THREE.Quaternion();
+    const scale = new THREE.Vector3();
+    for (const { obj, center, size } of level.colliders) {
+      m.compose(new THREE.Vector3().fromArray(center), new THREE.Quaternion(), new THREE.Vector3().fromArray(size));
+      m.premultiply(obj.matrixWorld);
+      m.decompose(pos, quat, scale);
+      const sx = Math.abs(scale.x), sy = Math.abs(scale.y), sz = Math.abs(scale.z);
+      world.addBox({ center: pos.toArray(), half: [sx / 2, sy / 2, sz / 2], quat: [quat.x, quat.y, quat.z, quat.w] });
+      const box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), wire);
+      box.matrixAutoUpdate = false;
+      box.matrix.compose(pos, quat, new THREE.Vector3(sx, sy, sz));
+      debug.add(box);
+    }
+    this.scene.add(debug);
+    this.colliderDebug = debug;
+
+    const comps = start.userData.components;
+    const cc = comps.find((c) => c.type === 'CharacterController');
+    const script = (name) => (comps.find((c) => c.type === 'Script' && c.script === name) || {}).props || {};
+    const shape = {
+      radius: cc ? cc.radius : 0.5,
+      height: cc ? cc.height : 2.3,
+      center: cc ? cc.center : [0, 1.27, 0],
+    };
+    const wp = start.getWorldPosition(new THREE.Vector3());
+    const wq = start.getWorldQuaternion(new THREE.Quaternion());
+    const fwd = new THREE.Vector3(0, 0, 1).applyQuaternion(wq);
+    const yaw = Math.atan2(fwd.x, fwd.z);
+    this.player = new PlayerController({
+      position: { x: wp.x, y: wp.y, z: wp.z }, yaw, controller: shape,
+      props: script('ThirdPersonController.js'), world,
+    });
+    this.followCam = new FollowCamera(script('ThirdPersonCamera.js'));
+    this.followCam.cut(this.player);
+
+    // Character model inside a holder, so we can move and turn it as a whole
+    this.holder = new THREE.Group();
+    this.scene.add(this.holder);
+    fitToHeight(character, shape.height);
+    this.holder.add(character);
+    this._setupAnimations(character);
+    this._syncPlayer();
+  }
+
+  /** Copies the player state to the Three.js objects and the camera. */
+  _syncPlayer() {
+    const p = this.player;
+    this.holder.position.set(p.pos.x, p.pos.y + p.capsule.bottom, p.pos.z); // feet on the capsule bottom
+    this.holder.rotation.y = p.yaw + MODEL_YAW_OFFSET;
+    if (!this.freeCamera) {
+      const c = this.followCam;
+      this.camera.position.set(c.position.x, c.position.y, c.position.z);
+      this.camera.lookAt(c.lookAt.x, c.lookAt.y, c.lookAt.z);
+    }
+    this._play(p.anim);
   }
 
   _findPlayerStart(root) {
@@ -130,10 +194,12 @@ export class Game {
   }
 
   _onKey(e) {
-    if (e.key === '0') this._stopAnimation(); // shows the base pose
-    if (e.key === '1') this._play('idle');
-    if (e.key === '2') this._play('walk');
-    if (e.key === '3') this._play('run');
+    if (e.code === 'KeyO') { // free camera (mouse) for debugging
+      this.freeCamera = !this.freeCamera;
+      this.controls.enabled = this.freeCamera;
+      if (this.player) this.controls.target.set(this.player.pos.x, this.player.pos.y + 1, this.player.pos.z);
+    }
+    if (e.code === 'KeyK' && this.colliderDebug) this.colliderDebug.visible = !this.colliderDebug.visible;
   }
 
   _resize() {
@@ -150,9 +216,16 @@ export class Game {
 
   _tick() {
     const dt = Math.min(this.clock.getDelta(), 0.1);
+    if (this.player) {
+      const step = Math.min(dt, 0.05);
+      const input = this.input.read();
+      this.player.update(step, input, this.followCam.angle);
+      this.followCam.update(step, this.player, input.recenter);
+      this._syncPlayer();
+    }
     if (this.mixer) this.mixer.update(dt);
     for (const fn of this.updatables) fn(dt);
-    this.controls.update();
+    if (this.freeCamera) this.controls.update();
     this.renderer.render(this.scene, this.camera);
 
     this._frames++;
@@ -161,7 +234,7 @@ export class Game {
       this._fps = Math.round(this._frames / this._fpsTime);
       this._frames = 0;
       this._fpsTime = 0;
-      let text = `SpaceLab v${VERSION}\n${this._fps} fps\nKeys: 0 base pose, 1 idle, 2 walk, 3 run`;
+      let text = `SpaceLab v${VERSION}\n${this._fps} fps\nWASD / arrows: move, Shift: run, Space: jump\nRight click / Alt: recenter camera\nO: free camera, K: show colliders`;
       if (this.clipsInfo) text += `\nClips: ${this.clipsInfo}`;
       if (this.currentName) text += `\nAnimation: ${this.currentName}`;
       if (this.levelStats) text += `\nLevel ${this.levelNumber}: ${this.levelStats.meshes} meshes`;

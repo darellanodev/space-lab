@@ -1,7 +1,7 @@
 {
   "name": "SpaceLab",
   "short_name": "SpaceLab",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Web port (Three.js) of the 3D arcade game SpaceLab, originally made in Unity.",
   "start_url": ".",
   "display": "fullscreen",

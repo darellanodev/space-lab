@@ -21,7 +21,13 @@ Levels are read from `public/levels/levelN.json`. They are made from the Unity s
 ```bash
 # 1. Unity 4.5 binary2text.exe makes a .txt file for each scene / material
 # 2. guids.txt: grep -rH "^guid:" --include=*.meta Assets > guids.txt
-python tools/unity2json.py scene scene1.unity.txt public/levels/level1.json guids.txt unity-meta
-python tools/unity2json.py materials public/levels/materials.json guids.txt unity-meta --mats Assets/Materials
+python tools/unity2json.py scene scene1.unity.txt public/levels/level1.json unity-meta/guids.txt unity-meta
+python tools/unity2json.py materials public/levels/materials.json unity-meta/guids.txt unity-meta --mats Assets/Materials
 ```
 Textures go in `public/textures/` (one flat folder, same file names as in Unity).
+
+## Controls (0.4.0)
+WASD or arrows: move (relative to the camera). Shift: run. Space: jump.
+Right mouse button or Alt: put the camera behind the character. O: free camera (mouse). K: show collision boxes.
+
+Logic tests (no browser needed): `node tests/collision.test.mjs` and `node tests/player.test.mjs`.

@@ -89,7 +89,7 @@
   "name": "Humo",
   "textures": {
    "_MainTex": {
-    "guid": "d1d6a23fa4c86e741a40d94fec7d3aee",
+    "file": "spritesheet_humo.png",
     "scale": [
      1.0,
      1.0
@@ -131,7 +131,7 @@
   "name": "Material2",
   "textures": {
    "_MainTex": {
-    "guid": "33930e7c0f97f6945a89d4b02e3bd7ee",
+    "file": "objetos2ColSpec.png",
     "scale": [
      1.0,
      1.0
@@ -187,7 +187,7 @@
   "name": "Material_Transparent",
   "textures": {
    "_MainTex": {
-    "guid": "d629d75d5530d8947bddd277c2831615",
+    "file": "objetos1Col.png",
     "scale": [
      1.0,
      1.0
@@ -212,7 +212,7 @@
   "name": "Material",
   "textures": {
    "_MainTex": {
-    "guid": "d629d75d5530d8947bddd277c2831615",
+    "file": "objetos1Col.png",
     "scale": [
      1.0,
      1.0

@@ -44,6 +44,9 @@ export class Assets {
       if (!node.isMesh) return;
       meshes++;
       node.frustumCulled = false; // skinned meshes can have a wrong bounding sphere
+      // The bone weights of this FBX do not sum to 1 (head, hands and feet shrink to the
+      // origin). Unity normalizes them when it imports the model, so we do the same.
+      if (node.isSkinnedMesh) node.normalizeSkinWeights();
       const materials = Array.isArray(node.material) ? node.material : [node.material];
       for (const m of materials) {
         m.normalMap = null; // missing in our assets
