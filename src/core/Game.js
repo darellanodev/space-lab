@@ -11,6 +11,7 @@ export const VERSION = __APP_VERSION__;
 
 // If the character walks sideways or backwards, change this angle (radians): Math.PI, Math.PI / 2 ...
 const MODEL_YAW_OFFSET = 0;
+const STAND_UP_ANGLE = Math.PI / 2; // extra turn so the animated character stands up
 
 export class Game {
   constructor(canvas, infoEl) {
@@ -204,7 +205,57 @@ export class Game {
     for (const clip of clips) this.actions[clip.name.split('|').pop().toLowerCase()] = this.mixer.clipAction(clip);
     this.clipMode = mode;
     this.charPaused = false;
+    this._fixOrientation(character);
     this._play(this.actions.idle ? 'idle' : Object.keys(this.actions)[0]);
+  }
+
+  /**
+   * The skeleton node ("rig") has its own rotation in the FBX, but the skin was bound without it,
+   * so the animated body lies on the floor. We measure how much the skin is rotated (using the
+   * hips bone) and we turn the "rig" node (the parent of the bones) to cancel it.
+   * Keys: 1 = baked clips (with this fix), 2 = original FBX clips (with this fix).
+   */
+  _fixOrientation(character) {
+    const first = this.actions.idle || Object.values(this.actions)[0];
+    let skinned = null;
+    character.traverse((n) => { if (n.isSkinnedMesh && !skinned) skinned = n; });
+    if (!first || !skinned) return;
+    const skeleton = skinned.skeleton;
+    const hips = skeleton.bones.find((b) => /DEF-hips$/.test(b.name)) || skeleton.bones.find((b) => /hips$/.test(b.name));
+    if (!hips) return;
+    let rig = hips;
+    while (rig.parent && rig.isBone) rig = rig.parent;
+    if (!this.rigBase) this.rigBase = { node: rig, matrix: rig.matrix.clone() };
+    // start from the original rig transform
+    rig.matrix.copy(this.rigBase.matrix);
+    rig.matrix.decompose(rig.position, rig.quaternion, rig.scale);
+    // pose the character at the first frame of idle
+    const probe = this.mixer.clipAction(first.getClip());
+    probe.play();
+    this.mixer.update(0);
+    character.updateMatrixWorld(true);
+    const index = skeleton.bones.indexOf(hips);
+    // where the skin ends up for this bone, and where it should be (the mesh itself)
+    const x = new THREE.Matrix4()
+      .multiplyMatrices(hips.matrixWorld, skeleton.boneInverses[index])
+      .multiply(skinned.bindMatrix);
+    const wanted = skinned.matrixWorld.clone();
+    const c = new THREE.Matrix4().multiplyMatrices(wanted, x.invert());
+    // After the measure the body still lies face down (head forward): stand it up, 90 degrees around X.
+    const origin = new THREE.Vector3().setFromMatrixPosition(character.matrixWorld);
+    const stand = new THREE.Matrix4()
+      .makeTranslation(origin.x, origin.y, origin.z)
+      .multiply(new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(1, 0, 0).transformDirection(character.parent.matrixWorld), -STAND_UP_ANGLE))
+      .multiply(new THREE.Matrix4().makeTranslation(-origin.x, -origin.y, -origin.z));
+    c.premultiply(stand);
+    const local = new THREE.Matrix4()
+      .copy(rig.parent.matrixWorld).invert()
+      .multiply(c)
+      .multiply(rig.matrixWorld);
+    local.decompose(rig.position, rig.quaternion, rig.scale);
+    rig.updateMatrix();
+    probe.stop();
+    this.mixer.update(0);
   }
 
   _play(name) {
