@@ -26,7 +26,14 @@ export class CollisionWorld {
     const axes = axesFromQuat(quat);
     // Bounding sphere radius, used to skip far boxes quickly
     const radius = Math.hypot(half[0], half[1], half[2]);
-    this.boxes.push({ center, half, axes, radius });
+    const box = { center, half, axes, radius };
+    this.boxes.push(box);
+    return box;
+  }
+
+  removeBox(box) {
+    const i = this.boxes.indexOf(box);
+    if (i >= 0) this.boxes.splice(i, 1);
   }
 
   /**

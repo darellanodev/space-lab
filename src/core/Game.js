@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Assets, fitToHeight } from './Assets.js';
+import { Sound } from './Sound.js';
+import { LevelLogic } from '../game/LevelLogic.js';
 import { LevelLoader, LIGHT_SCALE } from '../game/LevelLoader.js';
 import { CollisionWorld } from '../game/Collision.js';
 import { PlayerController, FollowCamera } from '../game/PlayerController.js';
@@ -101,12 +103,15 @@ export class Game {
     const pos = new THREE.Vector3();
     const quat = new THREE.Quaternion();
     const scale = new THREE.Vector3();
+    this.boxesByObj = new Map(); // level object -> its collision boxes (the exit door needs this)
     for (const { obj, center, size } of level.colliders) {
       m.compose(new THREE.Vector3().fromArray(center), new THREE.Quaternion(), new THREE.Vector3().fromArray(size));
       m.premultiply(obj.matrixWorld);
       m.decompose(pos, quat, scale);
       const sx = Math.abs(scale.x), sy = Math.abs(scale.y), sz = Math.abs(scale.z);
-      world.addBox({ center: pos.toArray(), half: [sx / 2, sy / 2, sz / 2], quat: [quat.x, quat.y, quat.z, quat.w] });
+      const added = world.addBox({ center: pos.toArray(), half: [sx / 2, sy / 2, sz / 2], quat: [quat.x, quat.y, quat.z, quat.w] });
+      if (!this.boxesByObj.has(obj)) this.boxesByObj.set(obj, []);
+      this.boxesByObj.get(obj).push(added);
       const box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), wire);
       box.matrixAutoUpdate = false;
       box.matrix.compose(pos, quat, new THREE.Vector3(sx, sy, sz));
@@ -131,6 +136,12 @@ export class Game {
       position: { x: wp.x, y: wp.y, z: wp.z }, yaw, controller: shape,
       props: script('ThirdPersonController.js'), world,
     });
+    this.sound = new Sound();
+    this.logic = new LevelLogic(level, {
+      collisionWorld: world, boxesByObj: this.boxesByObj, sound: this.sound,
+      onChange: (st) => this._showHud(st),
+      onFinish: () => this._showLevelComplete(),
+    });
     this.followCam = new FollowCamera(script('ThirdPersonCamera.js'));
     this.followCam.cut(this.player);
 
@@ -142,6 +153,25 @@ export class Game {
     this._setupAnimations(character);
     this._describeCharacter(character);
     this._syncPlayer();
+  }
+
+  _showHud(st) {
+    const el = document.getElementById('hud');
+    if (el) el.textContent = `Computers: ${st.active} / ${st.total}${st.doorOpen ? '   Exit door open!' : st.active === st.total ? '   Go to the exit door' : ''}`;
+  }
+
+  _showLevelComplete() {
+    this.levelDone = true;
+    const el = document.getElementById('message');
+    if (el) {
+      el.textContent = `Level ${this.levelNumber} complete!\nPress Enter to continue`;
+      el.style.display = 'block';
+    }
+  }
+
+  _nextLevel() {
+    const next = this.levelNumber >= 3 ? 1 : this.levelNumber + 1;
+    window.location.search = `?level=${next}`;
   }
 
   /** Info for debugging (shown on screen): meshes, material groups and bones. */
@@ -307,6 +337,7 @@ export class Game {
   _onKey(e) {
     const mode = ({ Digit1: 1, Digit2: 2 })[e.code];
     if (mode) this._applyClipMode(mode);
+    if (e.code === 'Enter' && this.levelDone) this._nextLevel();
     if (e.code === 'KeyP') this._debugCharacter('pose');
     if (e.code === 'KeyM') this._debugCharacter('material');
     if (e.code === 'KeyO') { // free camera (mouse) for debugging
@@ -333,10 +364,11 @@ export class Game {
     const dt = Math.min(this.clock.getDelta(), 0.1);
     if (this.player) {
       const step = Math.min(dt, 0.05);
-      const input = this.input.read();
+      const input = this.levelDone ? { h: 0, v: 0, run: false, jumpPressed: false, recenter: false } : this.input.read();
       this.player.update(step, input, this.followCam.angle);
       this.followCam.update(step, this.player, input.recenter);
       this._syncPlayer();
+      if (this.logic) this.logic.update(dt, this.player);
     }
     if (this.mixer) this.mixer.update(dt);
     for (const fn of this.updatables) fn(dt);

@@ -36,3 +36,7 @@ Logic tests (no browser needed): `node tests/collision.test.mjs` and `node tests
 The FBX animations are baked to `public/animations/character.json`:
 `python tools/bake_animations.py public/models/character.fbx public/animations/character.json 30`
 (needs Python 3 and numpy). Debug keys: P bind pose, M debug colors, 1 baked clips, 2 original FBX clips.
+
+## Level rules (0.5.0)
+Turn on the 4 computers by touching them, go to the exit door (it opens when all computers are on) and reach the teleport.
+Code: `src/game/LevelLogic.js`. Door movement is set by `DOOR_SLIDE` in that file.
