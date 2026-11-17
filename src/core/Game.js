@@ -11,6 +11,7 @@ export const VERSION = __APP_VERSION__;
 
 // If the character walks sideways or backwards, change this angle (radians): Math.PI, Math.PI / 2 ...
 const MODEL_YAW_OFFSET = 0;
+const TILT_DEGREES = 10; // side tilt of the animated character (positive = to the right)
 const STAND_UP_ANGLE = Math.PI / 2; // extra turn so the animated character stands up
 
 export class Game {
@@ -248,6 +249,12 @@ export class Game {
       .multiply(new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(1, 0, 0).transformDirection(character.parent.matrixWorld), -STAND_UP_ANGLE))
       .multiply(new THREE.Matrix4().makeTranslation(-origin.x, -origin.y, -origin.z));
     c.premultiply(stand);
+    // Small side tilt: positive = head moves to the right (seen from behind)
+    const tilt = new THREE.Matrix4()
+      .makeTranslation(origin.x, origin.y, origin.z)
+      .multiply(new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(0, 0, 1).transformDirection(character.parent.matrixWorld), THREE.MathUtils.degToRad(TILT_DEGREES)))
+      .multiply(new THREE.Matrix4().makeTranslation(-origin.x, -origin.y, -origin.z));
+    c.premultiply(tilt);
     const local = new THREE.Matrix4()
       .copy(rig.parent.matrixWorld).invert()
       .multiply(c)
