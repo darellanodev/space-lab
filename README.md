@@ -31,3 +31,8 @@ WASD or arrows: move (relative to the camera). Shift: run. Space: jump.
 Right mouse button or Alt: put the camera behind the character. O: free camera (mouse). K: show collision boxes.
 
 Logic tests (no browser needed): `node tests/collision.test.mjs` and `node tests/player.test.mjs`.
+
+## Character animations
+The FBX animations are baked to `public/animations/character.json`:
+`python tools/bake_animations.py public/models/character.fbx public/animations/character.json 30`
+(needs Python 3 and numpy). Debug keys: P bind pose, M debug colors, 1 baked clips, 2 original FBX clips.

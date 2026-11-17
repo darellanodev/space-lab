@@ -66,11 +66,13 @@ export class Game {
       const levelNumber = Number(new URLSearchParams(location.search).get('level')) || 1;
       this.levelNumber = levelNumber;
       const loader = new LevelLoader(this.assets);
-      const [sky, level, character] = await Promise.all([
+      const [sky, level, character, baked] = await Promise.all([
         this.assets.loadSkybox(),
         loader.load(levelNumber),
         this.assets.loadFBX('character.fbx'),
+        this.assets.loadBakedAnimations('character').catch(() => null),
       ]);
+      this.bakedClips = baked;
       this.scene.background = sky;
       this.scene.add(level.group);
       this.scene.updateMatrixWorld(true);
@@ -183,13 +185,25 @@ export class Game {
     console.info('[animations]', clips.map((c) => `${c.name} (${c.duration.toFixed(2)}s)`));
     this.clipsInfo = clips.map((c) => `${c.name} ${c.duration.toFixed(2)}s`).join(', ') || 'none';
     if (!clips.length) return;
+    this.animCharacter = character;
+    this.origClips = clips;
+    this._applyClipMode(1);
+  }
 
+  /** Mode 1 = baked clips (default), mode 2 = original clips of the FBX (for comparing). */
+  _applyClipMode(mode) {
+    const character = this.animCharacter;
+    if (!character) return;
+    const clips = mode === 1 && this.bakedClips ? this.bakedClips : this.origClips;
+    character.traverse((n) => { if (n.isSkinnedMesh) n.skeleton.pose(); });
+    if (this.mixer) this.mixer.stopAllAction();
     this.mixer = new THREE.AnimationMixer(character);
-    // Clip names in this FBX look like "rig|Idle". We keep only the last part, in lower case.
-    for (const clip of clips) {
-      const key = clip.name.split('|').pop().toLowerCase();
-      this.actions[key] = this.mixer.clipAction(clip);
-    }
+    this.actions = {};
+    this.currentAction = null;
+    // Clip names in the FBX look like "rig|Idle". We keep only the last part, in lower case.
+    for (const clip of clips) this.actions[clip.name.split('|').pop().toLowerCase()] = this.mixer.clipAction(clip);
+    this.clipMode = mode;
+    this.charPaused = false;
     this._play(this.actions.idle ? 'idle' : Object.keys(this.actions)[0]);
   }
 
@@ -233,6 +247,8 @@ export class Game {
   }
 
   _onKey(e) {
+    const mode = ({ Digit1: 1, Digit2: 2 })[e.code];
+    if (mode) this._applyClipMode(mode);
     if (e.code === 'KeyP') this._debugCharacter('pose');
     if (e.code === 'KeyM') this._debugCharacter('material');
     if (e.code === 'KeyO') { // free camera (mouse) for debugging
@@ -278,6 +294,7 @@ export class Game {
       let text = `SpaceLab v${VERSION}\n${this._fps} fps\nWASD / arrows: move, Shift: run, Space: jump\nRight click / Alt: recenter camera\nO: free camera, K: show colliders`;
       if (this.clipsInfo) text += `\nClips: ${this.clipsInfo}`;
       if (this.currentName) text += `\nAnimation: ${this.currentName}${this.charPaused ? ' (P: paused, bind pose)' : ''}`;
+      text += `\nAnimation clips: ${(this.clipMode || 1) === 1 && this.bakedClips ? 'baked' : 'original FBX'} (1 baked, 2 original FBX)`;
       if (this.charInfo) text += `\n${this.charInfo}`;
       if (this.levelStats) text += `\nLevel ${this.levelNumber}: ${this.levelStats.meshes} meshes`;
       if (this.levelStats && this.levelStats.missingMeshes.length) text += `\nMissing meshes: ${this.levelStats.missingMeshes.length}`;

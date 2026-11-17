@@ -73,6 +73,29 @@ export class Assets {
     return model;
   }
 
+  /**
+   * Loads animation clips baked by tools/bake_animations.py (public/animations/<name>.json).
+   * They replace the clips of the FBX, which Three.js plays wrong (sparse curves).
+   * Returns an array of THREE.AnimationClip, or null if the file does not exist.
+   */
+  async loadBakedAnimations(name) {
+    const res = await fetch(`${BASE}animations/${name}.json`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const clips = [];
+    for (const [clipName, c] of Object.entries(data.clips)) {
+      const times = Array.from({ length: c.frames }, (_, i) => i / data.fps);
+      const tracks = [];
+      for (const t of c.tracks) {
+        if (t.pos) tracks.push(new THREE.VectorKeyframeTrack(`${t.bone}.position`, times, t.pos));
+        if (t.rot) tracks.push(new THREE.QuaternionKeyframeTrack(`${t.bone}.quaternion`, times, t.rot));
+        if (t.scale) tracks.push(new THREE.VectorKeyframeTrack(`${t.bone}.scale`, times, t.scale));
+      }
+      clips.push(new THREE.AnimationClip(clipName, -1, tracks));
+    }
+    return clips;
+  }
+
   /** Loads the 6 sky images. Order: right, left, top, bottom, front, back. */
   async loadSkybox() {
     const names = ['right1', 'left2', 'top3', 'bottom4', 'front5', 'back6'];
