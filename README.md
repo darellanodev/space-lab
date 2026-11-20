@@ -35,13 +35,22 @@ Open the GitHub Pages link of this repository (Settings > Pages shows the addres
 
 ## Controls
 
+Keyboard and mouse:
+
 - `WASD` or arrow keys: move (relative to the camera)
 - `Shift`: run
 - `Space`: jump
 - Right mouse button or `Alt`: put the camera behind the character
 - `N`: sound on / off
 
-Debug keys: `O` free camera, `K` show collision boxes, `L` lose a life, `P` base pose, `M` debug colors, `1` / `2` baked / original animation clips.
+Phone or tablet (landscape): the touch controls are shown by themselves.
+
+- Left half of the screen: floating joystick. Push it all the way to run
+- `JUMP` button: jump
+- `CAM` button: put the camera behind the character
+- `EXIT` button: back to the level list
+
+To try it on a phone in development mode, run `pnpm dev --host` and open the address shown on the screen (phone and computer in the same network).
 
 ## Installation
 

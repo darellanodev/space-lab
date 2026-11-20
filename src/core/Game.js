@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Assets, fitToHeight } from './Assets.js';
 import { Sound } from './Sound.js';
 import { LevelLogic } from '../game/LevelLogic.js';
@@ -8,6 +7,8 @@ import { Mechanisms } from '../game/Mechanisms.js';
 import { Particles } from '../game/Particles.js';
 import { Save, MAX_LEVELS } from './Save.js';
 import { Nav } from './Nav.js';
+import { isTouchDevice } from './Device.js';
+import { TouchControls } from '../ui/TouchControls.js';
 import { LevelLoader, LIGHT_SCALE } from '../game/LevelLoader.js';
 import { CollisionWorld } from '../game/Collision.js';
 import { PlayerController, FollowCamera } from '../game/PlayerController.js';
@@ -19,14 +20,14 @@ export const VERSION = __APP_VERSION__;
 // If the character walks sideways or backwards, change this angle (radians): Math.PI, Math.PI / 2 ...
 const MODEL_YAW_OFFSET = 0;
 const MAX_LIVES = 3;
+const TOUCH = isTouchDevice();
 const GAME_OVER_SECONDS = 4; // time the Game Over sign stays before the level starts again
 const TILT_DEGREES = 10; // side tilt of the animated character (positive = to the right)
 const STAND_UP_ANGLE = Math.PI / 2; // extra turn so the animated character stands up
 
 export class Game {
-  constructor(canvas, infoEl) {
+  constructor(canvas) {
     this.canvas = canvas;
-    this.infoEl = infoEl;
     this.updatables = [];
     this.assets = new Assets();
 
@@ -39,15 +40,7 @@ export class Game {
     this.camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
     this.camera.position.set(0, 2.2, 5);
 
-    this.controls = new OrbitControls(this.camera, canvas);
-    this.controls.enabled = false;
-    this.controls.target.set(0, 1, 0);
-    this.controls.update();
-
     this.clock = new THREE.Clock();
-    this._frames = 0;
-    this._fpsTime = 0;
-    this._fps = 0;
 
     // Animation state (demo)
     this.mixer = null;
@@ -55,10 +48,13 @@ export class Game {
     this.currentAction = null;
 
     this.input = new Input();
+    if (TOUCH) {
+      this.touch = new TouchControls(this.input, () => Nav.toLevels());
+      // After the level is finished, a tap goes on
+      window.addEventListener('pointerdown', () => { if (this.levelDone) this._nextLevel(); });
+    }
     this.player = null; // PlayerController (Unity coordinates)
     this.holder = null; // Three.js group with the character model
-    this.freeCamera = false;
-    this.colliderDebug = null;
 
     this._buildLights();
     window.addEventListener('resize', () => this._resize());
@@ -103,9 +99,6 @@ export class Game {
   _createPlayer(start, character, level) {
     // Collision boxes: the world matrix of each object already is in Three.js space
     const world = new CollisionWorld();
-    const debug = new THREE.Group();
-    debug.visible = false;
-    const wire = new THREE.MeshBasicMaterial({ color: 0x00ff66, wireframe: true });
     const m = new THREE.Matrix4();
     const pos = new THREE.Vector3();
     const quat = new THREE.Quaternion();
@@ -113,9 +106,7 @@ export class Game {
     this.boxesByObj = new Map(); // level object -> its collision boxes (the exit door needs this)
     this.colliderEntries = [];
     for (const { obj, center, size } of level.colliders) {
-      const entry = { obj, center, size, box: world.addBox({ center: [0, 0, 0], half: [1, 1, 1], quat: [0, 0, 0, 1] }), debug: new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), wire) };
-      entry.debug.matrixAutoUpdate = false;
-      debug.add(entry.debug);
+      const entry = { obj, center, size, box: world.addBox({ center: [0, 0, 0], half: [1, 1, 1], quat: [0, 0, 0, 1] }) };
       this.colliderEntries.push(entry);
       if (!this.boxesByObj.has(obj)) this.boxesByObj.set(obj, []);
       this.boxesByObj.get(obj).push(entry.box);
@@ -129,12 +120,9 @@ export class Game {
         m.decompose(pos, quat, scale);
         const sx = Math.abs(scale.x), sy = Math.abs(scale.y), sz = Math.abs(scale.z);
         world.setBox(e.box, { center: pos.toArray(), half: [sx / 2, sy / 2, sz / 2], quat: [quat.x, quat.y, quat.z, quat.w] });
-        e.debug.matrix.compose(pos, quat, new THREE.Vector3(sx, sy, sz));
       }
     };
     this.refreshColliders();
-    this.scene.add(debug);
-    this.colliderDebug = debug;
 
     const comps = start.userData.components;
     const cc = comps.find((c) => c.type === 'CharacterController');
@@ -177,7 +165,6 @@ export class Game {
     fitToHeight(character, shape.height);
     this.holder.add(character);
     this._setupAnimations(character);
-    this._describeCharacter(character);
     this._syncPlayer();
   }
 
@@ -224,7 +211,7 @@ export class Game {
     this.sound.stopMusic();
     const el = document.getElementById('message');
     if (el) {
-      el.textContent = `Level ${this.levelNumber} complete!\nPress Enter to continue`;
+      el.textContent = `Level ${this.levelNumber} complete!\n${TOUCH ? 'Tap' : 'Press Enter'} to continue`;
       el.style.display = 'block';
     }
   }
@@ -234,31 +221,15 @@ export class Game {
     else Nav.toLevels();
   }
 
-  /** Info for debugging (shown on screen): meshes, material groups and bones. */
-  _describeCharacter(character) {
-    const parts = [];
-    character.traverse((n) => {
-      if (!n.isMesh) return;
-      const g = n.geometry.groups.map((x) => `${x.materialIndex}:${x.start}+${x.count}`).join(' ');
-      const mats = (Array.isArray(n.material) ? n.material : [n.material]).map((m) => m.name).join('/');
-      const w = n.geometry.attributes.skinWeight;
-      parts.push(`${n.name}${n.isSkinnedMesh ? ` [skinned, ${n.skeleton.bones.length} bones]` : ''} mats ${mats} groups ${g} verts ${n.geometry.attributes.position.count}${w ? '' : ' NO WEIGHTS'}`);
-    });
-    this.charInfo = `Character meshes: ${parts.join(' | ')}\nKeys: P bind pose, M debug colors / wireframe`;
-    console.info('[character]', parts);
-  }
-
   /** Copies the player state to the Three.js objects and the camera. */
   _syncPlayer() {
     const p = this.player;
     this.holder.position.set(p.pos.x, p.pos.y + p.capsule.bottom, p.pos.z); // feet on the capsule bottom
     this.holder.rotation.y = p.yaw + MODEL_YAW_OFFSET;
-    if (!this.freeCamera) {
-      const c = this.followCam;
-      this.camera.position.set(c.position.x, c.position.y, c.position.z);
-      this.camera.lookAt(c.lookAt.x, c.lookAt.y, c.lookAt.z);
-    }
-    if (!this.charPaused) this._play(p.anim);
+    const c = this.followCam;
+    this.camera.position.set(c.position.x, c.position.y, c.position.z);
+    this.camera.lookAt(c.lookAt.x, c.lookAt.y, c.lookAt.z);
+    this._play(p.anim);
   }
 
   _findPlayerStart(root) {
@@ -295,7 +266,6 @@ export class Game {
     // Clip names in the FBX look like "rig|Idle". We keep only the last part, in lower case.
     for (const clip of clips) this.actions[clip.name.split('|').pop().toLowerCase()] = this.mixer.clipAction(clip);
     this.clipMode = mode;
-    this.charPaused = false;
     this._fixOrientation(character);
     this._play(this.actions.idle ? 'idle' : Object.keys(this.actions)[0]);
   }
@@ -304,7 +274,6 @@ export class Game {
    * The skeleton node ("rig") has its own rotation in the FBX, but the skin was bound without it,
    * so the animated body lies on the floor. We measure how much the skin is rotated (using the
    * hips bone) and we turn the "rig" node (the parent of the bones) to cancel it.
-   * Keys: 1 = baked clips (with this fix), 2 = original FBX clips (with this fix).
    */
   _fixOrientation(character) {
     const first = this.actions.idle || Object.values(this.actions)[0];
@@ -364,50 +333,9 @@ export class Game {
     this.currentName = name;
   }
 
-  _stopAnimation() {
-    if (this.mixer) this.mixer.stopAllAction();
-    this.currentAction = null;
-    this.currentName = 'none (base pose)';
-  }
-
-  /** Debug keys for the character: P = bind pose (no animation), M = flat shading / wireframe. */
-  _debugCharacter(kind) {
-    const root = this.holder && this.holder.children[0];
-    if (!root) return;
-    if (kind === 'pose') {
-      this.charPaused = !this.charPaused;
-      if (this.charPaused) {
-        if (this.mixer) this.mixer.stopAllAction();
-        this.currentAction = null;
-        root.traverse((n) => { if (n.isSkinnedMesh) n.skeleton.pose(); });
-      }
-      return;
-    }
-    this.charDebugMode = ((this.charDebugMode || 0) + 1) % 3; // 0 normal, 1 flat colors, 2 wireframe
-    root.traverse((n) => {
-      if (!n.isMesh) return;
-      if (!n.userData.origMaterial) n.userData.origMaterial = n.material;
-      if (this.charDebugMode === 0) n.material = n.userData.origMaterial;
-      else {
-        n.material = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide, wireframe: this.charDebugMode === 2 });
-      }
-    });
-  }
-
   _onKey(e) {
-    const mode = ({ Digit1: 1, Digit2: 2 })[e.code];
-    if (mode) this._applyClipMode(mode);
     if (e.code === 'Enter' && this.levelDone) this._nextLevel();
     if (e.code === 'KeyN' && this.sound) this.sound.toggleMute();
-    if (e.code === 'KeyL') this.loseLife(); // debug: lose a life
-    if (e.code === 'KeyP') this._debugCharacter('pose');
-    if (e.code === 'KeyM') this._debugCharacter('material');
-    if (e.code === 'KeyO') { // free camera (mouse) for debugging
-      this.freeCamera = !this.freeCamera;
-      this.controls.enabled = this.freeCamera;
-      if (this.player) this.controls.target.set(this.player.pos.x, this.player.pos.y + 1, this.player.pos.z);
-    }
-    if (e.code === 'KeyK' && this.colliderDebug) this.colliderDebug.visible = !this.colliderDebug.visible;
   }
 
   _resize() {
@@ -437,24 +365,6 @@ export class Game {
     if (this.mixer) this.mixer.update(dt);
     if (this.particles) this.particles.update(dt, this.camera, this.renderer.domElement.height);
     for (const fn of this.updatables) fn(dt);
-    if (this.freeCamera) this.controls.update();
     this.renderer.render(this.scene, this.camera);
-
-    this._frames++;
-    this._fpsTime += dt;
-    if (this._fpsTime >= 0.5) {
-      this._fps = Math.round(this._frames / this._fpsTime);
-      this._frames = 0;
-      this._fpsTime = 0;
-      let text = `SpaceLab v${VERSION}\n${this._fps} fps\nWASD / arrows: move, Shift: run, Space: jump\nRight click / Alt: recenter camera\nO: free camera, K: show colliders, L: lose a life (test), N: sound on / off`;
-      if (this.clipsInfo) text += `\nClips: ${this.clipsInfo}`;
-      if (this.currentName) text += `\nAnimation: ${this.currentName}${this.charPaused ? ' (P: paused, bind pose)' : ''}`;
-      text += `\nAnimation clips: ${(this.clipMode || 1) === 1 && this.bakedClips ? 'baked' : 'original FBX'} (1 baked, 2 original FBX)`;
-      if (this.charInfo) text += `\n${this.charInfo}`;
-      if (this.levelStats) text += `\nLevel ${this.levelNumber}: ${this.levelStats.meshes} meshes`;
-      if (this.levelStats && this.levelStats.missingMeshes.length) text += `\nMissing meshes: ${this.levelStats.missingMeshes.length}`;
-      if (this.loadError) text += `\nLOAD ERROR: ${this.loadError}`;
-      this.infoEl.textContent = text;
-    }
   }
 }

@@ -8,17 +8,15 @@
   <style>
     html, body { margin: 0; height: 100%; background: #000; overflow: hidden; font-family: monospace; }
     #game { display: block; width: 100%; height: 100%; }
-    #info { position: fixed; left: 8px; top: 8px; color: #7fdcff; font-size: 12px; pointer-events: none; white-space: pre; }
     #hud { position: fixed; left: 24px; top: 20px; pointer-events: none; display: flex; gap: 30px; }
     #hud div { height: 62px; background-repeat: no-repeat; background-size: auto 100%; }
     #hud-lives { width: 301px; background-image: url(./textures/ui/hud/hud_hearts.png); }
     #hud-computers { position: relative; width: 242px; background-image: url(./textures/ui/hud/hud_computers_on.png); }
     #hud-computers-off { position: absolute; left: 0; top: 0; width: 242px; background-image: url(./textures/ui/hud/hud_computers_off.png); }
-    #game-over { display: none; position: fixed; left: 50%; top: 200px; width: 598px; height: 79px; margin-left: -299px; background: url(./textures/ui/hud/game_over.png) no-repeat; pointer-events: none; }
+    #game-over { display: none; position: fixed; left: 50%; top: 20%; width: min(598px, 90vw); aspect-ratio: 598 / 79; transform: translateX(-50%); background: url(./textures/ui/hud/game_over.png) no-repeat; background-size: 100% 100%; pointer-events: none; }
     #message { display: none; position: fixed; left: 0; right: 0; top: 35%; text-align: center; color: #fff; font-size: 32px; white-space: pre; text-shadow: 0 0 8px #000; pointer-events: none; }
-    #game, #info, #hud, #message, #game-over { display: none; }
+    #game, #hud, #message, #game-over { display: none; }
     body.playing #game { display: block; }
-    body.playing #info { display: block; }
     body.playing #hud { display: flex; }
     #menu { display: none; position: fixed; inset: 0; background: #000; }
     #stage { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(100vw, calc(100vh * 16 / 9)); aspect-ratio: 16 / 9; background-size: 100% 100%; background-repeat: no-repeat; }
@@ -30,14 +28,29 @@
     .ui-loading { position: absolute; left: 0; right: 0; top: 45%; text-align: center; color: #fff; font-size: 40px; letter-spacing: 4px; }
     #loading { display: none; position: fixed; inset: 0; background: #000; color: #fff; z-index: 10; align-items: center; justify-content: center; font-size: 40px; letter-spacing: 4px; }
     body.playing #loading { display: flex; }
+    html, body { touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+    @media (pointer: coarse) and (max-width: 900px) { #hud { transform: scale(0.6); transform-origin: top left; left: 12px; top: 8px; } }
+    /* touch controls */
+    #touch { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+    #touch-zone { position: absolute; left: 0; top: 0; width: 50%; height: 100%; pointer-events: auto; }
+    #touch-base { display: none; position: absolute; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; background: rgba(255, 255, 255, 0.15); border: 3px solid rgba(255, 255, 255, 0.5); pointer-events: none; }
+    #touch-thumb { position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; border-radius: 50%; background: rgba(255, 255, 255, 0.55); transform: translate(-50%, -50%); }
+    #touch-jump, #touch-camera, #touch-exit { position: absolute; display: flex; align-items: center; justify-content: center; color: #fff; font: bold 14px monospace; border-radius: 50%; background: rgba(0, 120, 255, 0.45); border: 3px solid rgba(255, 255, 255, 0.6); pointer-events: auto; }
+    #touch-jump { right: 28px; bottom: 28px; width: 96px; height: 96px; font-size: 18px; }
+    #touch-camera { right: 140px; bottom: 28px; width: 64px; height: 64px; background: rgba(255, 255, 255, 0.2); }
+    #touch-exit { right: 12px; top: 8px; width: 52px; height: 52px; font-size: 11px; background: rgba(0, 0, 0, 0.4); }
+    #touch .down { filter: brightness(1.6); }
+    /* the game is played in landscape */
+    #rotate { display: none; position: fixed; inset: 0; z-index: 20; background: #000; color: #fff; align-items: center; justify-content: center; text-align: center; font-size: 22px; padding: 24px; }
+    @media (pointer: coarse) and (orientation: portrait) { #rotate { display: flex; } }
   </style>
 </head>
 <body>
   <canvas id="game"></canvas>
-  <div id="info"></div>
   <div id="hud"><div id="hud-lives"></div><div id="hud-computers"><div id="hud-computers-off"></div></div></div>
   <div id="game-over"></div>
   <div id="menu"></div>
+  <div id="rotate">Please turn your device to landscape</div>
   <div id="loading">LOADING LEVEL</div>
   <div id="message"></div>
   <script type="module" src="/src/main.js"></script>

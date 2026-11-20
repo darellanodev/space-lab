@@ -30,7 +30,7 @@ Each delivery: `spacelab-v0-X-0.zip` with `manifest.json` and `package.json` in 
 | 0.13.0 | Congratulations screen (basic saving of unlocks and medals was done in 0.11.0) | ✅ |
 | 0.14.0 | Levels 2 and 3 checked and polished | ✅ |
 | 0.15.0 | GitHub Actions: build and deploy to GitHub Pages on every push | ✅ |
-| 0.16.0 | Touch / mobile controls | ☐ |
+| 0.16.0 | Touch / mobile controls | ✅ |
 | 0.17.0 | Optimization (download size, loading time) | ☐ |
 
 ## Waiting for files
