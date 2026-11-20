@@ -1,76 +1,119 @@
-# SpaceLab (web port)
+# SpaceLab
 
-Requirements: Node 18+ and pnpm.
+![SpaceLab banner](img_github_readme/banner.png)
+
+A 3D arcade game made with Unity 4.5 about 10 years ago, now ported to the web with Three.js.
+You move a character through rooms and corridors and turn on all the computers to open the exit door and reach the teleport.
+Watch out for UFOs, lasers, lava and turning platforms!
+
+## THIS APPLICATION IS UNDER ACTIVE DEVELOPMENT, BUT STILL CONSIDERED BETA
+
+## Technologies
+
+[![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white)](https://threejs.org/)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![pnpm](https://img.shields.io/badge/pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white)](https://pnpm.io/)
+[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/features/actions)
+
+## Screenshots
+
+![Level selector](img_github_readme/levels.png)
+
+## Try it online
+
+Every push to `main` is built and published with GitHub Actions.
+Open the GitHub Pages link of this repository (Settings > Pages shows the address).
+
+## How to play
+
+- Touch the 4 computers of the level to turn them on.
+- When all the computers are on, go to the exit door. It opens by itself.
+- Reach the teleport to finish the level.
+- You have 3 lives. UFOs, lasers and lava take one life and start the level again.
+- Your medal is the number of lives you have left: 1 bronze, 2 silver, 3 gold.
+
+## Controls
+
+- `WASD` or arrow keys: move (relative to the camera)
+- `Shift`: run
+- `Space`: jump
+- Right mouse button or `Alt`: put the camera behind the character
+- `N`: sound on / off
+
+Debug keys: `O` free camera, `K` show collision boxes, `L` lose a life, `P` base pose, `M` debug colors, `1` / `2` baked / original animation clips.
+
+## Installation
+
+- Install Node.js 18 or newer and pnpm
+- Run the command `pnpm install`
+
+## Execute the unit tests
+
+- Run `run_tests.sh`
+
+## Running in development mode
+
+- Run `run.sh` or `pnpm run dev`
+- Open `http://localhost:5173/`
+- To go straight to a level: `http://localhost:5173/?level=1` (or 2, 3)
+
+## Build to web
+
+- Run `pnpm build`
+- The game is created in the `dist` folder
+- Run `pnpm preview` to try it
+
+## Deploy to GitHub Pages
+
+- In GitHub go to Settings > Pages > Source and choose "GitHub Actions" (one time only)
+- Push to `main`. The workflow `.github/workflows/deploy.yml` runs the tests, builds the game and publishes it
+
+## Project structure
+
+- `src/core`: game loop, assets, sound, saving and screen navigation
+- `src/game`: level loading, player, collisions, computers and door, dangers, moving parts and particles
+- `src/ui`: main menu, level selector, tutorial and credits
+- `public`: levels (JSON), models (FBX), textures, sounds and baked animations
+- `tools`: Python scripts used to convert the Unity project (not needed to play)
+- `tests`: logic tests that run with plain Node.js
+- `unity-meta`: `.meta` files of the original Unity project
+
+The version is in `manifest.json` and it must be the same in `public/manifest.json` and `package.json`.
+The plan of the port is in `ROADMAP.md`.
+
+## Utility to convert the Unity scenes to levels
+
+The levels are made from the Unity scenes with a Python tool:
+
+- Use `binary2text.exe` of Unity 4.5 to make a `.txt` file for each scene and material
+- Make `guids.txt`: `grep -rH "^guid:" --include=*.meta Assets > guids.txt`
+- Run:
 
 ```bash
-pnpm install
-pnpm dev     # development
-pnpm build   # creates dist/
-```
-
-The version is defined in `manifest.json` (it is shown on screen and must match `package.json`).
-In the 0.2.0 demo: drag with the mouse to rotate the camera, keys 0, 1, 2, 3 change the character animation (base pose, idle, walk, run).
-See `ROADMAP.md` for the plan.
-
-`unity-meta/` keeps the Unity `.meta` files of the original project (they will be used by the level importer).
-
-## Levels (0.3.0)
-Open `http://localhost:5173/?level=1` (or 2, 3).
-Levels are read from `public/levels/levelN.json`. They are made from the Unity scenes with a Python tool (not needed to run the game):
-
-```bash
-# 1. Unity 4.5 binary2text.exe makes a .txt file for each scene / material
-# 2. guids.txt: grep -rH "^guid:" --include=*.meta Assets > guids.txt
 python tools/unity2json.py scene scene1.unity.txt public/levels/level1.json unity-meta/guids.txt unity-meta
 python tools/unity2json.py materials public/levels/materials.json unity-meta/guids.txt unity-meta --mats Assets/Materials
 ```
-Textures go in `public/textures/` (one flat folder, same file names as in Unity).
 
-## Controls (0.4.0)
-WASD or arrows: move (relative to the camera). Shift: run. Space: jump.
-Right mouse button or Alt: put the camera behind the character. O: free camera (mouse). K: show collision boxes.
+## Utility to bake the character animations
 
-Logic tests (no browser needed): `node tests/collision.test.mjs` and `node tests/player.test.mjs`.
+The animations of the FBX are baked to `public/animations/character.json` (needs Python 3 and numpy):
 
-## Character animations
-The FBX animations are baked to `public/animations/character.json`:
-`python tools/bake_animations.py public/models/character.fbx public/animations/character.json 30`
-(needs Python 3 and numpy). Debug keys: P bind pose, M debug colors, 1 baked clips, 2 original FBX clips.
+```bash
+python tools/bake_animations.py public/models/character.fbx public/animations/character.json 30
+```
 
-## Level rules (0.5.0)
-Turn on the 4 computers by touching them, go to the exit door (it opens when all computers are on) and reach the teleport.
-Code: `src/game/LevelLogic.js`. Door movement is set by `DOOR_SLIDE` in that file.
+## Saved data
 
-## Lives (0.6.0)
-3 lives. `Game.loseLife()` takes one life, plays a sound and starts the level again (computers off, door closed, player at the start).
-With no lives left, the Game Over sign is shown for 4 seconds and the page reloads. Test key: L (lose a life).
+The game saves the last level finished, the medals and if the tutorial was seen in the browser (`localStorage`).
+To start from zero, clear the site data of the page.
 
-## Dangers (0.7.0)
-Death floors (lava / pits) and lasers hurt the player: see `src/game/Hazards.js`. Lasers are on 2 seconds and off 2 seconds.
-Level 1 has none; levels 2 and 3 do.
+## Credits
 
-## Moving parts (0.8.0)
-UFOs (go back and forth, hurt the player) and turning platforms (carry the player): see `src/game/Mechanisms.js`.
+Original game: 3D, programming and music by Daniel Arellano Aliaga.
+Made with Blender, Gimp, Inkscape, LMMS and Unity. Ported to the web with Three.js.
 
-## Audio (0.9.0)
-Each level plays its own music (the one set in the `InitLevel` object of the Unity scene). Effects: computer, door, life lost.
-Key N turns the sound on / off (the choice is saved in the browser).
+## Resources
 
-## Particles (0.10.0)
-Teleport sparks (with a blue light), smoke and gas: `src/game/Particles.js`. The Unity particle settings were not exported,
-so the effects are similar, not identical. Change the numbers in `KINDS` to adjust them.
-
-## Menu (0.11.0)
-Pages: main menu (no address), level list (`?screen=levels`) and game (`?level=N`). Code: `src/ui/Menu.js`, `src/core/Nav.js`.
-Progress (last level finished, medals) is saved in the browser by `src/core/Save.js`. To start from zero, clear the site data of the page.
-
-## Tutorial and credits (0.12.0)
-The first time the player presses Start, the 4 tutorial pages are shown. After that, the tutorial and the credits are in the main menu.
-
-## Congratulations (0.13.0)
-The first time the player finishes the last level, the Congratulations screen is shown (`?screen=congratulations`).
-
-## Deploy (GitHub Pages)
-`.github/workflows/deploy.yml` runs the tests, builds the game and publishes it on every push to `main`.
-One-time setup: in GitHub go to Settings > Pages > Source and choose "GitHub Actions".
-The game will be at `https://<user>.github.io/<repository>/`.
+- [Three.js documentation](https://threejs.org/docs/)
+- [Vite guide](https://vitejs.dev/guide/)
