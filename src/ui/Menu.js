@@ -46,7 +46,16 @@ export class Menu {
     stage.id = 'stage';
     root.appendChild(stage);
     this.stage = stage;
+    this.fromStart = false; // the tutorial was opened by the Start button
+    this.show(screen);
+  }
+
+  /** Shows a screen without reloading the page, so the music keeps playing. */
+  show(screen, page = 1) {
+    this.stage.innerHTML = '';
     if (screen === 'levels') this._levels();
+    else if (screen === 'tutorial') this._tutorial(page);
+    else if (screen === 'credits') this._credits();
     else this._main();
   }
 
@@ -68,17 +77,62 @@ export class Menu {
   _main() {
     this._background('portada.png');
     this.sound.playMusic('music_menu.ogg');
-    this._button('btn_start.png', 405, 102, 560, 440, () => Nav.toLevels());
-    const hint = document.createElement('div');
-    hint.className = 'ui-hint';
-    hint.textContent = 'Click or press a key to start the music';
-    this.stage.appendChild(hint);
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Enter' || e.code === 'Space') Nav.toLevels();
+    const start = () => {
+      if (Save.tutorialSeen()) Nav.toLevels();
+      else {
+        this.fromStart = true;
+        this.show('tutorial', 1);
+      }
+    };
+    this._button('btn_start.png', 405, 102, 560, 365, start);
+    this._button('btn_tutorial.png', 306, 76, 370, 485, () => {
+      this.fromStart = false;
+      this.show('tutorial', 1);
     });
+    this._button('btn_credits.png', 308, 76, 690, 485, () => this.show('credits'));
+    if (!this.keyHandler) {
+      this.keyHandler = (e) => {
+        if (this.current === 'main' && (e.code === 'Enter' || e.code === 'Space')) start();
+      };
+      window.addEventListener('keydown', this.keyHandler);
+    }
+    this.current = 'main';
+  }
+
+  /** How to play: 4 pages. The numbers at the top change the page. */
+  _tutorial(page) {
+    this.current = 'tutorial';
+    this.sound.playMusic('music_menu.ogg');
+    const mobile = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    this._background(page === 4 ? `tutorial_pag4_${mobile ? 'mobile' : 'pc'}.png` : `tutorial_pag${page}.png`);
+    if (page >= 2) Save.markTutorialSeen();
+    for (let i = 0; i < 4; i++) {
+      const zone = document.createElement('div');
+      zone.className = 'ui-item ui-button';
+      place(zone, 388 + i * 74, 22, 66, 50);
+      zone.addEventListener('click', () => this.show('tutorial', i + 1));
+      this.stage.appendChild(zone);
+    }
+    const leave = () => (this.fromStart ? Nav.toLevels() : this.show('main'));
+    this._button('btn_back.png', 354, 86, 24, 478, leave);
+    if (page < 4) this._button('btn_next.png', 306, 75, 690, 478, () => this.show('tutorial', page + 1));
+    else {
+      this._button('btn_finish.png', 306, 75, 690, 478, () => {
+        Save.markTutorialSeen();
+        leave();
+      });
+    }
+  }
+
+  _credits() {
+    this.current = 'credits';
+    this.sound.playMusic('music_credits.ogg');
+    this._background('creditos.png');
+    this._button('btn_back.png', 354, 86, 640, 478, () => this.show('main'));
   }
 
   _levels() {
+    this.current = 'levels';
     this._background('niveles.png');
     this.sound.playMusic('music_menu.ogg');
     const progress = Save.get();

@@ -63,3 +63,6 @@ so the effects are similar, not identical. Change the numbers in `KINDS` to adju
 ## Menu (0.11.0)
 Pages: main menu (no address), level list (`?screen=levels`) and game (`?level=N`). Code: `src/ui/Menu.js`, `src/core/Nav.js`.
 Progress (last level finished, medals) is saved in the browser by `src/core/Save.js`. To start from zero, clear the site data of the page.
+
+## Tutorial and credits (0.12.0)
+The first time the player presses Start, the 4 tutorial pages are shown. After that, the tutorial and the credits are in the main menu.

@@ -16,7 +16,26 @@ function read() {
   return { lastCompleted: 0, medals: [0, 0, 0] };
 }
 
+const TUTORIAL_KEY = 'spacelab-tutorial-seen';
+
 export const Save = {
+  /** The tutorial is shown by itself the first time the player presses Start. */
+  tutorialSeen() {
+    try {
+      return localStorage.getItem(TUTORIAL_KEY) === '1';
+    } catch (e) {
+      return false;
+    }
+  },
+
+  markTutorialSeen() {
+    try {
+      localStorage.setItem(TUTORIAL_KEY, '1');
+    } catch (e) {
+      // saving is optional
+    }
+  },
+
   get() {
     return read();
   },
