@@ -69,3 +69,8 @@ The first time the player presses Start, the 4 tutorial pages are shown. After t
 
 ## Congratulations (0.13.0)
 The first time the player finishes the last level, the Congratulations screen is shown (`?screen=congratulations`).
+
+## Deploy (GitHub Pages)
+`.github/workflows/deploy.yml` runs the tests, builds the game and publishes it on every push to `main`.
+One-time setup: in GitHub go to Settings > Pages > Source and choose "GitHub Actions".
+The game will be at `https://<user>.github.io/<repository>/`.
