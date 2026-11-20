@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { touchesTriggers } from './Triggers.js';
 
 /**
  * Rules of one level (ported from Computer.cs, Exitdoor.cs and Teleport.cs):
@@ -102,35 +103,6 @@ export class LevelLogic {
     if (this.o.onChange) this.o.onChange({ active: this.active, total: this.total, doorOpen: !!(this.door && this.door.opened) });
   }
 
-  /** True if the player (a vertical capsule) touches one of the trigger boxes. */
-  _touches(triggers, p) {
-    const shape = p.capsule;
-    const r = shape.radius * 0.8;
-    const heights = [shape.bottom + 0.3, shape.bottom + shape.height * 0.5, shape.bottom + shape.height - 0.3];
-    const point = new THREE.Vector3();
-    const local = new THREE.Vector3();
-    const scale = new THREE.Vector3();
-    const inv = new THREE.Matrix4();
-    for (const t of triggers) {
-      t.obj.updateWorldMatrix(true, false);
-      inv.copy(t.obj.matrixWorld).invert();
-      scale.setFromMatrixScale(t.obj.matrixWorld);
-      const h = new THREE.Vector3().fromArray(t.size).multiplyScalar(0.5);
-      const c = new THREE.Vector3().fromArray(t.center);
-      for (const y of heights) {
-        point.set(p.pos.x, p.pos.y + y, p.pos.z);
-        local.copy(point).applyMatrix4(inv).sub(c);
-        const out = new THREE.Vector3(
-          Math.max(Math.abs(local.x) - h.x, 0) * scale.x,
-          Math.max(Math.abs(local.y) - h.y, 0) * scale.y,
-          Math.max(Math.abs(local.z) - h.z, 0) * scale.z,
-        );
-        if (out.length() <= r) return true;
-      }
-    }
-    return false;
-  }
-
   /** Starts the level again after the player loses a life: computers off, door closed. */
   reset() {
     for (const c of this.computers) {
@@ -152,7 +124,7 @@ export class LevelLogic {
   update(dt, player) {
     if (this.finished) return;
     for (const c of this.computers) {
-      if (c.active || !this._touches(c.triggers, player)) continue;
+      if (c.active || !touchesTriggers(c.triggers, player)) continue;
       c.active = true;
       c.lamps.forEach((l) => { l.material = c.on; });
       this.o.sound.play('computer.mp3');
@@ -161,7 +133,7 @@ export class LevelLogic {
     }
     const d = this.door;
     if (d) {
-      if (!d.opened && this.allOn && this._touches(d.triggers, player)) {
+      if (!d.opened && this.allOn && touchesTriggers(d.triggers, player)) {
         d.opened = true;
         this.o.sound.play('opendoor.mp3');
         // the closed door blocks the player: remove its collision boxes
@@ -174,7 +146,7 @@ export class LevelLogic {
         d.obj.position.copy(d.start).add(DOOR_SLIDE.clone().applyQuaternion(d.obj.quaternion).multiplyScalar(k));
       }
     }
-    if (this.teleport && this._touches(this.teleport.triggers, player)) {
+    if (this.teleport && touchesTriggers(this.teleport.triggers, player)) {
       this.finished = true;
       if (this.o.onFinish) this.o.onFinish();
     }

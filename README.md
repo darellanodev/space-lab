@@ -44,3 +44,7 @@ Code: `src/game/LevelLogic.js`. Door movement is set by `DOOR_SLIDE` in that fil
 ## Lives (0.6.0)
 3 lives. `Game.loseLife()` takes one life, plays a sound and starts the level again (computers off, door closed, player at the start).
 With no lives left, the Game Over sign is shown for 4 seconds and the page reloads. Test key: L (lose a life).
+
+## Dangers (0.7.0)
+Death floors (lava / pits) and lasers hurt the player: see `src/game/Hazards.js`. Lasers are on 2 seconds and off 2 seconds.
+Level 1 has none; levels 2 and 3 do.

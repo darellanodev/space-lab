@@ -21,7 +21,7 @@ Each delivery: `spacelab-v0-X-0.zip` with `manifest.json` and `package.json` in 
 | 0.4.0 | Character: movement (walk / run / jump), follow camera and collisions with walls and floor | ✅ |
 | 0.5.0 | Computers, exit door, teleport and end of level | ✅ |
 | 0.6.0 | GameManager: lives, level reset, Game Over | ✅ |
-| 0.7.0 | Dangers: lava (DeathFloor) and lasers | ☐ |
+| 0.7.0 | Dangers: lava (DeathFloor) and lasers | ✅ |
 | 0.8.0 | Dangers: UFOs and rotating platforms | ☐ |
 | 0.9.0 | HUD (lives, computers, Game Over) | ☐ |
 | 0.10.0 | Audio: music and sound effects | ☐ |

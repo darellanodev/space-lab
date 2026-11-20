@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Assets, fitToHeight } from './Assets.js';
 import { Sound } from './Sound.js';
 import { LevelLogic } from '../game/LevelLogic.js';
+import { Hazards } from '../game/Hazards.js';
 import { LevelLoader, LIGHT_SCALE } from '../game/LevelLoader.js';
 import { CollisionWorld } from '../game/Collision.js';
 import { PlayerController, FollowCamera } from '../game/PlayerController.js';
@@ -144,6 +145,7 @@ export class Game {
       onChange: (st) => this._showHud(st),
       onFinish: () => this._showLevelComplete(),
     });
+    this.hazards = new Hazards(level);
     this.lives = MAX_LIVES;
     this.startPos = { x: wp.x, y: wp.y, z: wp.z };
     this.startYaw = yaw;
@@ -192,6 +194,7 @@ export class Game {
     this.player.reset(this.startPos, this.startYaw);
     this.followCam.cut(this.player);
     this.logic.reset();
+    this.hazards.reset();
   }
 
   _showLevelComplete() {
@@ -404,6 +407,7 @@ export class Game {
       this.followCam.update(step, this.player, input.recenter);
       this._syncPlayer();
       if (this.logic) this.logic.update(dt, this.player);
+      if (this.hazards && !this.levelDone && !this.gameOver && this.hazards.update(dt, this.player)) this.loseLife();
     }
     if (this.mixer) this.mixer.update(dt);
     for (const fn of this.updatables) fn(dt);
