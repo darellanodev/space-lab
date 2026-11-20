@@ -45,6 +45,9 @@ export const DEFAULT_CAMERA_PROPS = {
   lockCameraTimeout: 0.2, snapSmoothLag: 0.2, snapMaxSpeed: 1720,
 };
 
+// Higher than the Unity game (1 = same height as the original)
+const JUMP_HEIGHT_FACTOR = 1.6;
+
 export class PlayerController {
   /**
    * @param {object} o
@@ -160,7 +163,7 @@ export class PlayerController {
     // --- ApplyJumping ---
     if (this.lastJumpTime + 0.05 <= this.time && this.grounded && p.canJump
         && this.time < this.lastJumpButtonTime + 0.15) {
-      this.verticalSpeed = Math.sqrt(2 * p.jumpHeight * p.gravity);
+      this.verticalSpeed = Math.sqrt(2 * p.jumpHeight * JUMP_HEIGHT_FACTOR * p.gravity);
       this.jumping = true;
       this.lastJumpTime = this.time;
       this.lastJumpButtonTime = -10;

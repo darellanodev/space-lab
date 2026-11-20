@@ -23,12 +23,19 @@ export class CollisionWorld {
   }
 
   addBox({ center, half, quat }) {
-    const axes = axesFromQuat(quat);
-    // Bounding sphere radius, used to skip far boxes quickly
-    const radius = Math.hypot(half[0], half[1], half[2]);
-    const box = { center, half, axes, radius };
+    const box = {};
+    this.setBox(box, { center, half, quat });
     this.boxes.push(box);
     return box;
+  }
+
+  /** Changes the place of a box (for moving platforms). */
+  setBox(box, { center, half, quat }) {
+    box.center = center;
+    box.half = half;
+    box.axes = axesFromQuat(quat);
+    // Bounding sphere radius, used to skip far boxes quickly
+    box.radius = Math.hypot(half[0], half[1], half[2]);
   }
 
   removeBox(box) {

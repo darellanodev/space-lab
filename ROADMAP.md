@@ -22,16 +22,15 @@ Each delivery: `spacelab-v0-X-0.zip` with `manifest.json` and `package.json` in 
 | 0.5.0 | Computers, exit door, teleport and end of level | ✅ |
 | 0.6.0 | GameManager: lives, level reset, Game Over | ✅ |
 | 0.7.0 | Dangers: lava (DeathFloor) and lasers | ✅ |
-| 0.8.0 | Dangers: UFOs and rotating platforms | ☐ |
-| 0.9.0 | HUD (lives, computers, Game Over) | ☐ |
-| 0.10.0 | Audio: music and sound effects | ☐ |
-| 0.11.0 | Lighting, approximated lightmaps, particles | ☐ |
-| 0.12.0 | Main menu, level selector, loading screen | ☐ |
-| 0.13.0 | Tutorial and credits | ☐ |
-| 0.14.0 | Saving (localStorage): unlocks and medals, Congratulations screen | ☐ |
-| 0.15.0 | Levels 2 and 3 | ☐ |
-| 0.16.0 | Touch / mobile controls | ☐ |
-| 0.17.0 | Optimization, build and web deployment | ☐ |
+| 0.8.0 | Dangers: UFOs and rotating platforms | ✅ |
+| 0.9.0 | Audio: level music, sound effects, mute key (HUD was already done in 0.6.0) | ✅ |
+| 0.10.0 | Lighting, approximated lightmaps, particles | ☐ |
+| 0.11.0 | Main menu, level selector, loading screen | ☐ |
+| 0.12.0 | Tutorial and credits | ☐ |
+| 0.13.0 | Saving (localStorage): unlocks and medals, Congratulations screen | ☐ |
+| 0.14.0 | Levels 2 and 3 checked and polished | ☐ |
+| 0.15.0 | Touch / mobile controls | ☐ |
+| 0.16.0 | Optimization, build and web deployment | ☐ |
 
 ## Waiting for files
 - [x] All models (`Assets/Meshes`, `.fbx`) and character / skybox textures

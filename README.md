@@ -48,3 +48,10 @@ With no lives left, the Game Over sign is shown for 4 seconds and the page reloa
 ## Dangers (0.7.0)
 Death floors (lava / pits) and lasers hurt the player: see `src/game/Hazards.js`. Lasers are on 2 seconds and off 2 seconds.
 Level 1 has none; levels 2 and 3 do.
+
+## Moving parts (0.8.0)
+UFOs (go back and forth, hurt the player) and turning platforms (carry the player): see `src/game/Mechanisms.js`.
+
+## Audio (0.9.0)
+Each level plays its own music (the one set in the `InitLevel` object of the Unity scene). Effects: computer, door, life lost.
+Key N turns the sound on / off (the choice is saved in the browser).

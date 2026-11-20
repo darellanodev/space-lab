@@ -4,6 +4,7 @@ import { Assets, fitToHeight } from './Assets.js';
 import { Sound } from './Sound.js';
 import { LevelLogic } from '../game/LevelLogic.js';
 import { Hazards } from '../game/Hazards.js';
+import { Mechanisms } from '../game/Mechanisms.js';
 import { LevelLoader, LIGHT_SCALE } from '../game/LevelLoader.js';
 import { CollisionWorld } from '../game/Collision.js';
 import { PlayerController, FollowCamera } from '../game/PlayerController.js';
@@ -107,19 +108,28 @@ export class Game {
     const quat = new THREE.Quaternion();
     const scale = new THREE.Vector3();
     this.boxesByObj = new Map(); // level object -> its collision boxes (the exit door needs this)
+    this.colliderEntries = [];
     for (const { obj, center, size } of level.colliders) {
-      m.compose(new THREE.Vector3().fromArray(center), new THREE.Quaternion(), new THREE.Vector3().fromArray(size));
-      m.premultiply(obj.matrixWorld);
-      m.decompose(pos, quat, scale);
-      const sx = Math.abs(scale.x), sy = Math.abs(scale.y), sz = Math.abs(scale.z);
-      const added = world.addBox({ center: pos.toArray(), half: [sx / 2, sy / 2, sz / 2], quat: [quat.x, quat.y, quat.z, quat.w] });
+      const entry = { obj, center, size, box: world.addBox({ center: [0, 0, 0], half: [1, 1, 1], quat: [0, 0, 0, 1] }), debug: new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), wire) };
+      entry.debug.matrixAutoUpdate = false;
+      debug.add(entry.debug);
+      this.colliderEntries.push(entry);
       if (!this.boxesByObj.has(obj)) this.boxesByObj.set(obj, []);
-      this.boxesByObj.get(obj).push(added);
-      const box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), wire);
-      box.matrixAutoUpdate = false;
-      box.matrix.compose(pos, quat, new THREE.Vector3(sx, sy, sz));
-      debug.add(box);
+      this.boxesByObj.get(obj).push(entry.box);
     }
+    /** Puts the collision boxes of a level object where the object is now (for moving platforms). */
+    this.refreshColliders = (target) => {
+      for (const e of this.colliderEntries) {
+        if (target && e.obj !== target) continue;
+        m.compose(new THREE.Vector3().fromArray(e.center), new THREE.Quaternion(), new THREE.Vector3().fromArray(e.size));
+        m.premultiply(e.obj.matrixWorld);
+        m.decompose(pos, quat, scale);
+        const sx = Math.abs(scale.x), sy = Math.abs(scale.y), sz = Math.abs(scale.z);
+        world.setBox(e.box, { center: pos.toArray(), half: [sx / 2, sy / 2, sz / 2], quat: [quat.x, quat.y, quat.z, quat.w] });
+        e.debug.matrix.compose(pos, quat, new THREE.Vector3(sx, sy, sz));
+      }
+    };
+    this.refreshColliders();
     this.scene.add(debug);
     this.colliderDebug = debug;
 
@@ -140,12 +150,16 @@ export class Game {
       props: script('ThirdPersonController.js'), world,
     });
     this.sound = new Sound();
+    const init = (level.group.getObjectByName('InitLevel') || {}).userData;
+    const music = init && (init.components || []).find((c) => c.type === 'AudioSource' && c.clip);
+    if (music) this.sound.playMusic(music.clip.file); // the music of the level (InitLevel in the Unity scene)
     this.logic = new LevelLogic(level, {
       collisionWorld: world, boxesByObj: this.boxesByObj, sound: this.sound,
       onChange: (st) => this._showHud(st),
       onFinish: () => this._showLevelComplete(),
     });
     this.hazards = new Hazards(level);
+    this.mechanisms = new Mechanisms(level, this.refreshColliders);
     this.lives = MAX_LIVES;
     this.startPos = { x: wp.x, y: wp.y, z: wp.z };
     this.startYaw = yaw;
@@ -184,6 +198,7 @@ export class Game {
     this._showLives();
     this.sound.play('livelost.mp3');
     if (this.lives <= 0) {
+      this.sound.stopMusic();
       this.gameOver = true;
       this.holder.visible = false;
       const el = document.getElementById('game-over');
@@ -199,6 +214,7 @@ export class Game {
 
   _showLevelComplete() {
     this.levelDone = true;
+    this.sound.stopMusic();
     const el = document.getElementById('message');
     if (el) {
       el.textContent = `Level ${this.levelNumber} complete!\nPress Enter to continue`;
@@ -375,6 +391,7 @@ export class Game {
     const mode = ({ Digit1: 1, Digit2: 2 })[e.code];
     if (mode) this._applyClipMode(mode);
     if (e.code === 'Enter' && this.levelDone) this._nextLevel();
+    if (e.code === 'KeyN' && this.sound) this.sound.toggleMute();
     if (e.code === 'KeyL') this.loseLife(); // debug: lose a life
     if (e.code === 'KeyP') this._debugCharacter('pose');
     if (e.code === 'KeyM') this._debugCharacter('material');
@@ -407,6 +424,7 @@ export class Game {
       this.followCam.update(step, this.player, input.recenter);
       this._syncPlayer();
       if (this.logic) this.logic.update(dt, this.player);
+      if (this.mechanisms && !this.levelDone && !this.gameOver && this.mechanisms.update(dt, this.player)) this.loseLife();
       if (this.hazards && !this.levelDone && !this.gameOver && this.hazards.update(dt, this.player)) this.loseLife();
     }
     if (this.mixer) this.mixer.update(dt);
@@ -420,7 +438,7 @@ export class Game {
       this._fps = Math.round(this._frames / this._fpsTime);
       this._frames = 0;
       this._fpsTime = 0;
-      let text = `SpaceLab v${VERSION}\n${this._fps} fps\nWASD / arrows: move, Shift: run, Space: jump\nRight click / Alt: recenter camera\nO: free camera, K: show colliders, L: lose a life (test)`;
+      let text = `SpaceLab v${VERSION}\n${this._fps} fps\nWASD / arrows: move, Shift: run, Space: jump\nRight click / Alt: recenter camera\nO: free camera, K: show colliders, L: lose a life (test), N: sound on / off`;
       if (this.clipsInfo) text += `\nClips: ${this.clipsInfo}`;
       if (this.currentName) text += `\nAnimation: ${this.currentName}${this.charPaused ? ' (P: paused, bind pose)' : ''}`;
       text += `\nAnimation clips: ${(this.clipMode || 1) === 1 && this.bakedClips ? 'baked' : 'original FBX'} (1 baked, 2 original FBX)`;
