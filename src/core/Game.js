@@ -7,6 +7,7 @@ import { Mechanisms } from '../game/Mechanisms.js';
 import { Particles } from '../game/Particles.js';
 import { Save, MAX_LEVELS } from './Save.js';
 import { Nav } from './Nav.js';
+import { Progress } from './Progress.js';
 import { isTouchDevice } from './Device.js';
 import { TouchControls } from '../ui/TouchControls.js';
 import { LevelLoader, LIGHT_SCALE } from '../game/LevelLoader.js';
@@ -72,13 +73,17 @@ export class Game {
     try {
       const levelNumber = Nav.current().level || 1;
       this.levelNumber = levelNumber;
-      const loader = new LevelLoader(this.assets);
+      const fill = document.getElementById('loading-fill');
+      const progress = new Progress((f) => { if (fill) fill.style.width = `${Math.round(f * 100)}%`; });
+      const loader = new LevelLoader(this.assets, progress);
       const [sky, level, character, baked] = await Promise.all([
-        this.assets.loadSkybox(),
+        progress.track(this.assets.loadSkybox()),
         loader.load(levelNumber),
-        this.assets.loadFBX('character.fbx'),
-        this.assets.loadBakedAnimations('character').catch(() => null),
+        progress.track(this.assets.loadFBX('character.fbx')),
+        progress.track(this.assets.loadBakedAnimations('character').catch(() => null)),
       ]);
+      await loader.whenTexturesLoaded();
+      progress.expect(1); // the last step: building the scene
       this.bakedClips = baked;
       this.scene.background = sky;
       this.scene.add(level.group);
@@ -89,6 +94,7 @@ export class Game {
       // Put the character where the Unity player started (the active "Player" object)
       const start = this._findPlayerStart(level.group);
       if (start) this._createPlayer(start, character, level);
+      progress.step();
     } catch (err) {
       console.error(err);
       this.loadError = String(err.message || err);

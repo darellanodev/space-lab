@@ -13,8 +13,10 @@ const sanitize = (name) => name.replace(/\s/g, '_').replace(/[[\].:/]/g, ''); //
  * The JSON already has the coordinates converted from Unity to Three.js.
  */
 export class LevelLoader {
-  constructor(assets) {
+  constructor(assets, progress = null) {
     this.assets = assets;
+    this.progress = progress; // optional Progress (loading bar)
+    this.textureLoads = []; // one promise per texture, see whenTexturesLoaded()
     this.modelCache = new Map(); // fbx file -> { meshName: geometry }
     this.materialCache = new Map();
     this.textureLoader = new THREE.TextureLoader();
@@ -26,9 +28,10 @@ export class LevelLoader {
   }
 
   async load(levelNumber) {
+    const track = (p) => (this.progress ? this.progress.track(p) : p);
     const [level, materials] = await Promise.all([
-      fetch(`${BASE}levels/level${levelNumber}.json`).then((r) => r.json()),
-      fetch(`${BASE}levels/materials.json`).then((r) => r.json()),
+      track(fetch(`${BASE}levels/level${levelNumber}.json`).then((r) => r.json())),
+      track(fetch(`${BASE}levels/materials.json`).then((r) => r.json())),
     ]);
     this.materialDefs = materials;
 
@@ -41,7 +44,7 @@ export class LevelLoader {
       n.children.forEach(collect);
     };
     level.roots.forEach(collect);
-    await Promise.all([...files].map((f) => this._loadGeometries(f)));
+    await Promise.all([...files].map((f) => track(this._loadGeometries(f))));
 
     const group = new THREE.Group();
     group.name = `level${levelNumber}`;
@@ -50,6 +53,11 @@ export class LevelLoader {
       group, settings: level.settings, stats: this.stats, data: level,
       colliders: this.colliders, triggers: this.triggers,
     };
+  }
+
+  /** Waits until all the textures of the level are loaded. */
+  whenTexturesLoaded() {
+    return Promise.all(this.textureLoads);
   }
 
   async _loadGeometries(file) {
@@ -95,8 +103,12 @@ export class LevelLoader {
   _texture(ref) {
     const url = `${BASE}textures/${ref.file}`;
     const loader = /\.tga$/i.test(ref.file) ? this.tgaLoader : this.textureLoader;
-    const tex = loader.load(url, (t) => { t.needsUpdate = true; }, undefined, () => {
+    let finish;
+    const loaded = new Promise((resolve) => { finish = resolve; });
+    this.textureLoads.push(this.progress ? this.progress.track(loaded) : loaded);
+    const tex = loader.load(url, (t) => { t.needsUpdate = true; finish(); }, undefined, () => {
       console.warn('[texture] not found:', ref.file);
+      finish();
     });
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
