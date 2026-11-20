@@ -55,3 +55,7 @@ UFOs (go back and forth, hurt the player) and turning platforms (carry the playe
 ## Audio (0.9.0)
 Each level plays its own music (the one set in the `InitLevel` object of the Unity scene). Effects: computer, door, life lost.
 Key N turns the sound on / off (the choice is saved in the browser).
+
+## Particles (0.10.0)
+Teleport sparks (with a blue light), smoke and gas: `src/game/Particles.js`. The Unity particle settings were not exported,
+so the effects are similar, not identical. Change the numbers in `KINDS` to adjust them.

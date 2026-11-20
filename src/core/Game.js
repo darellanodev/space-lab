@@ -5,6 +5,7 @@ import { Sound } from './Sound.js';
 import { LevelLogic } from '../game/LevelLogic.js';
 import { Hazards } from '../game/Hazards.js';
 import { Mechanisms } from '../game/Mechanisms.js';
+import { Particles } from '../game/Particles.js';
 import { LevelLoader, LIGHT_SCALE } from '../game/LevelLoader.js';
 import { CollisionWorld } from '../game/Collision.js';
 import { PlayerController, FollowCamera } from '../game/PlayerController.js';
@@ -159,6 +160,7 @@ export class Game {
       onFinish: () => this._showLevelComplete(),
     });
     this.hazards = new Hazards(level);
+    this.particles = new Particles(level);
     this.mechanisms = new Mechanisms(level, this.refreshColliders);
     this.lives = MAX_LIVES;
     this.startPos = { x: wp.x, y: wp.y, z: wp.z };
@@ -428,6 +430,7 @@ export class Game {
       if (this.hazards && !this.levelDone && !this.gameOver && this.hazards.update(dt, this.player)) this.loseLife();
     }
     if (this.mixer) this.mixer.update(dt);
+    if (this.particles) this.particles.update(dt, this.camera, this.renderer.domElement.height);
     for (const fn of this.updatables) fn(dt);
     if (this.freeCamera) this.controls.update();
     this.renderer.render(this.scene, this.camera);
