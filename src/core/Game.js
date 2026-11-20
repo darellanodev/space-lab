@@ -6,7 +6,7 @@ import { LevelLogic } from '../game/LevelLogic.js';
 import { Hazards } from '../game/Hazards.js';
 import { Mechanisms } from '../game/Mechanisms.js';
 import { Particles } from '../game/Particles.js';
-import { Save } from './Save.js';
+import { Save, MAX_LEVELS } from './Save.js';
 import { Nav } from './Nav.js';
 import { LevelLoader, LIGHT_SCALE } from '../game/LevelLoader.js';
 import { CollisionWorld } from '../game/Collision.js';
@@ -218,17 +218,20 @@ export class Game {
 
   _showLevelComplete() {
     this.levelDone = true;
+    // The Congratulations screen is shown only the first time the last level is finished
+    this.showCongratulations = this.levelNumber === MAX_LEVELS && !Save.get().medals[MAX_LEVELS - 1];
     Save.completeLevel(this.levelNumber, this.lives);
     this.sound.stopMusic();
     const el = document.getElementById('message');
     if (el) {
-      el.textContent = `Level ${this.levelNumber} complete!\nPress Enter to go to the level list`;
+      el.textContent = `Level ${this.levelNumber} complete!\nPress Enter to continue`;
       el.style.display = 'block';
     }
   }
 
   _nextLevel() {
-    Nav.toLevels();
+    if (this.showCongratulations) Nav.toCongratulations();
+    else Nav.toLevels();
   }
 
   /** Info for debugging (shown on screen): meshes, material groups and bones. */

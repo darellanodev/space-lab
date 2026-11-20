@@ -56,6 +56,7 @@ export class Menu {
     if (screen === 'levels') this._levels();
     else if (screen === 'tutorial') this._tutorial(page);
     else if (screen === 'credits') this._credits();
+    else if (screen === 'congratulations') this._congratulations();
     else this._main();
   }
 
@@ -122,6 +123,13 @@ export class Menu {
         leave();
       });
     }
+  }
+
+  _congratulations() {
+    this.current = 'congratulations';
+    this.sound.playMusic('music_congratulations.ogg');
+    this._background('congratulations.png');
+    this._button('btn_finish.png', 306, 75, 690, 478, () => Nav.toLevels());
   }
 
   _credits() {

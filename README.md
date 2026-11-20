@@ -66,3 +66,6 @@ Progress (last level finished, medals) is saved in the browser by `src/core/Save
 
 ## Tutorial and credits (0.12.0)
 The first time the player presses Start, the 4 tutorial pages are shown. After that, the tutorial and the credits are in the main menu.
+
+## Congratulations (0.13.0)
+The first time the player finishes the last level, the Congratulations screen is shown (`?screen=congratulations`).
