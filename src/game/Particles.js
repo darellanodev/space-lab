@@ -13,14 +13,18 @@ const KINDS = {
   smoke: { // slow grey puffs
     count: 22, color: [0.72, 0.72, 0.75], life: 3.5, speed: 0.55, spread: 0.3, size: 0.9, grow: 1.6, alpha: 0.28, additive: false,
   },
-  gas: { // pale green gas from the holes
-    count: 28, color: [0.7, 0.95, 0.75], life: 2.6, speed: 0.7, spread: 0.25, size: 0.7, grow: 1.4, alpha: 0.3, additive: false,
+  gas: { // reddish lava gas from the small holes: spread over the hole, new random places all the time
+    count: 40, color: [1.0, 0.42, 0.2], life: 2.6, speed: 0.7, spread: 0.9, size: 0.8, grow: 1.4, alpha: 0.22, additive: true,
+  },
+  gasBig: { // the same for the big pit with the turning platform: many more points over a wide area
+    count: 170, color: [1.0, 0.42, 0.2], life: 3.4, speed: 1.0, spread: 7, size: 1.6, grow: 1.4, alpha: 0.2, additive: true,
   },
 };
 
 function kindOf(name) {
   if (name === 'Particulas') return 'teleport';
   if (name === 'Smoke') return 'smoke';
+  if (name === 'Gases_granFoso') return 'gasBig';
   if (name.startsWith('Gases')) return 'gas';
   return null;
 }
