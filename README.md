@@ -40,3 +40,7 @@ The FBX animations are baked to `public/animations/character.json`:
 ## Level rules (0.5.0)
 Turn on the 4 computers by touching them, go to the exit door (it opens when all computers are on) and reach the teleport.
 Code: `src/game/LevelLogic.js`. Door movement is set by `DOOR_SLIDE` in that file.
+
+## Lives (0.6.0)
+3 lives. `Game.loseLife()` takes one life, plays a sound and starts the level again (computers off, door closed, player at the start).
+With no lives left, the Game Over sign is shown for 4 seconds and the page reloads. Test key: L (lose a life).

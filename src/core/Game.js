@@ -13,6 +13,8 @@ export const VERSION = __APP_VERSION__;
 
 // If the character walks sideways or backwards, change this angle (radians): Math.PI, Math.PI / 2 ...
 const MODEL_YAW_OFFSET = 0;
+const MAX_LIVES = 3;
+const GAME_OVER_SECONDS = 4; // time the Game Over sign stays before the level starts again
 const TILT_DEGREES = 10; // side tilt of the animated character (positive = to the right)
 const STAND_UP_ANGLE = Math.PI / 2; // extra turn so the animated character stands up
 
@@ -142,6 +144,10 @@ export class Game {
       onChange: (st) => this._showHud(st),
       onFinish: () => this._showLevelComplete(),
     });
+    this.lives = MAX_LIVES;
+    this.startPos = { x: wp.x, y: wp.y, z: wp.z };
+    this.startYaw = yaw;
+    this._showLives();
     this.followCam = new FollowCamera(script('ThirdPersonCamera.js'));
     this.followCam.cut(this.player);
 
@@ -155,9 +161,37 @@ export class Game {
     this._syncPlayer();
   }
 
+  /** Computers part of the HUD (images in public/textures/ui/hud). */
   _showHud(st) {
-    const el = document.getElementById('hud');
-    if (el) el.textContent = `Computers: ${st.active} / ${st.total}${st.doorOpen ? '   Exit door open!' : st.active === st.total ? '   Go to the exit door' : ''}`;
+    const off = document.getElementById('hud-computers-off');
+    if (off) off.style.width = `${(242 / 4) * (st.total - st.active)}px`;
+  }
+
+  _showLives() {
+    const el = document.getElementById('hud-lives');
+    if (el) el.style.width = `${(301 / 5) * this.lives}px`;
+  }
+
+  /**
+   * The player is hurt (lava, laser, UFO...). Takes one life and starts the level again.
+   * With no lives left, shows Game Over and restarts the game after a few seconds.
+   */
+  loseLife() {
+    if (this.gameOver || this.levelDone || !this.player) return;
+    this.lives -= 1;
+    this._showLives();
+    this.sound.play('livelost.mp3');
+    if (this.lives <= 0) {
+      this.gameOver = true;
+      this.holder.visible = false;
+      const el = document.getElementById('game-over');
+      if (el) el.style.display = 'block';
+      setTimeout(() => window.location.reload(), GAME_OVER_SECONDS * 1000);
+      return;
+    }
+    this.player.reset(this.startPos, this.startYaw);
+    this.followCam.cut(this.player);
+    this.logic.reset();
   }
 
   _showLevelComplete() {
@@ -338,6 +372,7 @@ export class Game {
     const mode = ({ Digit1: 1, Digit2: 2 })[e.code];
     if (mode) this._applyClipMode(mode);
     if (e.code === 'Enter' && this.levelDone) this._nextLevel();
+    if (e.code === 'KeyL') this.loseLife(); // debug: lose a life
     if (e.code === 'KeyP') this._debugCharacter('pose');
     if (e.code === 'KeyM') this._debugCharacter('material');
     if (e.code === 'KeyO') { // free camera (mouse) for debugging
@@ -364,7 +399,7 @@ export class Game {
     const dt = Math.min(this.clock.getDelta(), 0.1);
     if (this.player) {
       const step = Math.min(dt, 0.05);
-      const input = this.levelDone ? { h: 0, v: 0, run: false, jumpPressed: false, recenter: false } : this.input.read();
+      const input = this.levelDone || this.gameOver ? { h: 0, v: 0, run: false, jumpPressed: false, recenter: false } : this.input.read();
       this.player.update(step, input, this.followCam.angle);
       this.followCam.update(step, this.player, input.recenter);
       this._syncPlayer();
@@ -381,7 +416,7 @@ export class Game {
       this._fps = Math.round(this._frames / this._fpsTime);
       this._frames = 0;
       this._fpsTime = 0;
-      let text = `SpaceLab v${VERSION}\n${this._fps} fps\nWASD / arrows: move, Shift: run, Space: jump\nRight click / Alt: recenter camera\nO: free camera, K: show colliders`;
+      let text = `SpaceLab v${VERSION}\n${this._fps} fps\nWASD / arrows: move, Shift: run, Space: jump\nRight click / Alt: recenter camera\nO: free camera, K: show colliders, L: lose a life (test)`;
       if (this.clipsInfo) text += `\nClips: ${this.clipsInfo}`;
       if (this.currentName) text += `\nAnimation: ${this.currentName}${this.charPaused ? ' (P: paused, bind pose)' : ''}`;
       text += `\nAnimation clips: ${(this.clipMode || 1) === 1 && this.bakedClips ? 'baked' : 'original FBX'} (1 baked, 2 original FBX)`;

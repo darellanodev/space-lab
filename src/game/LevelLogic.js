@@ -10,6 +10,7 @@ import * as THREE from 'three';
 const BASE = import.meta.env.BASE_URL;
 const DOOR_SLIDE = new THREE.Vector3(0, 2.2, 0); // how far the door moves when it opens (door local space)
 const DOOR_SECONDS = 1;
+const OK_SIGN_TURN = Math.PI; // the OK signs of the computers face the other way
 
 function hasScript(obj, name) {
   const comps = obj.userData.components || [];
@@ -62,6 +63,7 @@ export class LevelLogic {
     obj.children.forEach((child) => {
       if (!child.name.startsWith('SpriteComputerOk')) return;
       const lamp = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), off);
+      lamp.rotation.y = OK_SIGN_TURN;
       child.add(lamp);
       lamps.push(lamp);
     });
@@ -127,6 +129,23 @@ export class LevelLogic {
       }
     }
     return false;
+  }
+
+  /** Starts the level again after the player loses a life: computers off, door closed. */
+  reset() {
+    for (const c of this.computers) {
+      c.active = false;
+      c.lamps.forEach((l) => { l.material = c.off; });
+    }
+    const d = this.door;
+    if (d) {
+      if (d.opened) for (const box of this.o.boxesByObj.get(d.obj) || []) this.o.collisionWorld.boxes.push(box);
+      d.opened = false;
+      d.progress = 0;
+      d.obj.position.copy(d.start);
+      d.lamps.forEach((l) => { l.material = d.locked; });
+    }
+    this._notify();
   }
 
   /** Call once per frame. */

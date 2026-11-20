@@ -83,6 +83,23 @@ export class PlayerController {
     this.anim = 'idle'; // 'idle' | 'walk' | 'run'
   }
 
+  /** Puts the player back at a start position (used when a life is lost). */
+  reset(position, yaw) {
+    this.pos = { x: position.x, y: position.y, z: position.z };
+    this.moveDir = [Math.sin(yaw), Math.cos(yaw)];
+    this.moveSpeed = 0;
+    this.verticalSpeed = 0;
+    this.inAir = [0, 0];
+    this.isMoving = false;
+    this.movingBack = false;
+    this.jumping = false;
+    this.grounded = false;
+    this.lockCameraTimer = 0;
+    this.yaw = yaw;
+    this.speed = 0;
+    this.anim = 'idle';
+  }
+
   /**
    * @param {number} dt seconds
    * @param {{h:number, v:number, run:boolean, jumpPressed:boolean}} input
