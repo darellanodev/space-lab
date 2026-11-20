@@ -59,3 +59,7 @@ Key N turns the sound on / off (the choice is saved in the browser).
 ## Particles (0.10.0)
 Teleport sparks (with a blue light), smoke and gas: `src/game/Particles.js`. The Unity particle settings were not exported,
 so the effects are similar, not identical. Change the numbers in `KINDS` to adjust them.
+
+## Menu (0.11.0)
+Pages: main menu (no address), level list (`?screen=levels`) and game (`?level=N`). Code: `src/ui/Menu.js`, `src/core/Nav.js`.
+Progress (last level finished, medals) is saved in the browser by `src/core/Save.js`. To start from zero, clear the site data of the page.

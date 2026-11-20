@@ -25,9 +25,9 @@ Each delivery: `spacelab-v0-X-0.zip` with `manifest.json` and `package.json` in 
 | 0.8.0 | Dangers: UFOs and rotating platforms | ✅ |
 | 0.9.0 | Audio: level music, sound effects, mute key (HUD was already done in 0.6.0) | ✅ |
 | 0.10.0 | Lighting, approximated lightmaps, particles | ✅ |
-| 0.11.0 | Main menu, level selector, loading screen | ☐ |
+| 0.11.0 | Main menu, level selector, loading screen | ✅ |
 | 0.12.0 | Tutorial and credits | ☐ |
-| 0.13.0 | Saving (localStorage): unlocks and medals, Congratulations screen | ☐ |
+| 0.13.0 | Congratulations screen (basic saving of unlocks and medals was done in 0.11.0) | ☐ |
 | 0.14.0 | Levels 2 and 3 checked and polished | ☐ |
 | 0.15.0 | Touch / mobile controls | ☐ |
 | 0.16.0 | Optimization, build and web deployment | ☐ |

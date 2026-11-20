@@ -6,6 +6,8 @@ import { LevelLogic } from '../game/LevelLogic.js';
 import { Hazards } from '../game/Hazards.js';
 import { Mechanisms } from '../game/Mechanisms.js';
 import { Particles } from '../game/Particles.js';
+import { Save } from './Save.js';
+import { Nav } from './Nav.js';
 import { LevelLoader, LIGHT_SCALE } from '../game/LevelLoader.js';
 import { CollisionWorld } from '../game/Collision.js';
 import { PlayerController, FollowCamera } from '../game/PlayerController.js';
@@ -72,7 +74,7 @@ export class Game {
   /** Loads the sky, the level (?level=1, 2 or 3 in the URL) and the character. */
   async loadContent() {
     try {
-      const levelNumber = Number(new URLSearchParams(location.search).get('level')) || 1;
+      const levelNumber = Nav.current().level || 1;
       this.levelNumber = levelNumber;
       const loader = new LevelLoader(this.assets);
       const [sky, level, character, baked] = await Promise.all([
@@ -205,7 +207,7 @@ export class Game {
       this.holder.visible = false;
       const el = document.getElementById('game-over');
       if (el) el.style.display = 'block';
-      setTimeout(() => window.location.reload(), GAME_OVER_SECONDS * 1000);
+      setTimeout(() => Nav.toMenu(), GAME_OVER_SECONDS * 1000); // like the Unity game: back to the main menu
       return;
     }
     this.player.reset(this.startPos, this.startYaw);
@@ -216,17 +218,17 @@ export class Game {
 
   _showLevelComplete() {
     this.levelDone = true;
+    Save.completeLevel(this.levelNumber, this.lives);
     this.sound.stopMusic();
     const el = document.getElementById('message');
     if (el) {
-      el.textContent = `Level ${this.levelNumber} complete!\nPress Enter to continue`;
+      el.textContent = `Level ${this.levelNumber} complete!\nPress Enter to go to the level list`;
       el.style.display = 'block';
     }
   }
 
   _nextLevel() {
-    const next = this.levelNumber >= 3 ? 1 : this.levelNumber + 1;
-    window.location.search = `?level=${next}`;
+    Nav.toLevels();
   }
 
   /** Info for debugging (shown on screen): meshes, material groups and bones. */
