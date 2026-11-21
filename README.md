@@ -47,7 +47,6 @@ Phone or tablet (landscape): the touch controls are shown by themselves.
 
 - Left half of the screen: floating joystick. Push it all the way to run
 - `JUMP` button: jump
-- `CAM` button: put the camera behind the character
 - `EXIT` button: back to the level list
 
 To try it on a phone in development mode, run `pnpm dev --host` and open the address shown on the screen (phone and computer in the same network).

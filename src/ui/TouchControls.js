@@ -1,7 +1,7 @@
 /**
  * On-screen controls for phones and tablets (landscape):
  * - Left side: a floating joystick (touch anywhere on the left half and drag). A strong push runs.
- * - Right side: jump button and a camera button (puts the camera behind the character).
+ * - Right side: jump button.
  * - Top right: exit button (back to the level list).
  */
 const STICK_RADIUS = 60; // pixels
@@ -77,16 +77,9 @@ export class TouchControls {
     const jump = el('div', 'touch-jump', root);
     jump.textContent = 'JUMP';
     jump.addEventListener('pointerdown', (e) => { input.pressJump(); jump.classList.add('down'); e.preventDefault(); });
-    const release = (b) => { b.classList.remove('down'); };
-    jump.addEventListener('pointerup', () => release(jump));
-    jump.addEventListener('pointercancel', () => release(jump));
-
-    const cam = el('div', 'touch-camera', root);
-    cam.textContent = 'CAM';
-    cam.addEventListener('pointerdown', (e) => { input.touch.recenter = true; cam.classList.add('down'); e.preventDefault(); });
-    const camUp = () => { input.touch.recenter = false; release(cam); };
-    cam.addEventListener('pointerup', camUp);
-    cam.addEventListener('pointercancel', camUp);
+    const release = () => jump.classList.remove('down');
+    jump.addEventListener('pointerup', release);
+    jump.addEventListener('pointercancel', release);
 
     const exit = el('div', 'touch-exit', root);
     exit.textContent = 'EXIT';
