@@ -48,3 +48,9 @@ Each delivery: `spacelab-v0-X-0.zip` with `manifest.json` and `package.json` in 
 - Vite + Three.js (ES modules). Own collisions (AABB / capsule) at first; Rapier if needed.
 - Unity `.exr` lightmaps are not reused directly: they are approximated with lights / AO.
 - `GUITexture` / `OnGUI` → HTML/CSS over the canvas.
+
+## Pending for the author (art and texts, to do by hand)
+- [ ] Main menu picture (`public/textures/ui/portadas/portada.png`): remove the version number from the design.
+- [ ] Tutorial page 4 for phones (`tutorial_pag4_mobile.png`): change the picture so it looks like the real touch controls (floating joystick on the left, JUMP button on the right, EXIT button at the top right).
+- [ ] Credits picture (`creditos.png`): it says Unity. Change the text to say that the game was first made with Unity and that this version was ported to Three.js.
+
