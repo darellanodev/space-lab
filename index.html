@@ -18,8 +18,8 @@
     #game, #hud, #message, #game-over { display: none; }
     body.playing #game { display: block; }
     body.playing #hud { display: flex; }
-    #menu { display: none; position: fixed; inset: 0; background: #000; }
-    #stage { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(100vw, calc(100vh * 16 / 9)); aspect-ratio: 16 / 9; background-size: 100% 100%; background-repeat: no-repeat; }
+    #menu { display: none; position: fixed; left: 0; top: 0; width: var(--app-w, 100vw); height: var(--app-h, 100vh); background: #000; overflow: hidden; }
+    #stage { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(var(--app-w, 100vw), calc(var(--app-h, 100vh) * 16 / 9)); aspect-ratio: 16 / 9; background-size: 100% 100%; background-repeat: no-repeat; }
     .ui-item { position: absolute; user-select: none; -webkit-user-drag: none; }
     .ui-button { cursor: pointer; transition: transform 0.1s, filter 0.1s; }
     .ui-button:hover { transform: scale(1.04); filter: brightness(1.15); }
@@ -46,6 +46,22 @@
     #rotate { display: none; position: fixed; inset: 0; z-index: 20; background: #000; color: #fff; align-items: center; justify-content: center; text-align: center; font-size: 22px; padding: 24px; }
     @media (pointer: coarse) and (orientation: portrait) { #rotate { display: flex; } }
   </style>
+  <script>
+    // The real visible size. On phones "100vh" is taller than the visible page (browser bars), so we measure it.
+    (function () {
+      function fit() {
+        var vv = window.visualViewport;
+        var w = vv ? vv.width : window.innerWidth;
+        var h = vv ? vv.height : window.innerHeight;
+        document.documentElement.style.setProperty('--app-w', w + 'px');
+        document.documentElement.style.setProperty('--app-h', h + 'px');
+      }
+      fit();
+      window.addEventListener('resize', fit);
+      window.addEventListener('orientationchange', fit);
+      if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
+    })();
+  </script>
 </head>
 <body>
   <canvas id="game"></canvas>
