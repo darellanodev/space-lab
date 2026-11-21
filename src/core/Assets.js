@@ -20,8 +20,8 @@ export class Assets {
     this.textureLoader = new THREE.TextureLoader();
     // Material name in the FBX -> texture file
     this.materialTextures = {
-      skin: 'skin_diffuse.png',
-      clothes: 'clothes_diffuse.png',
+      skin: 'skin_diffuse.webp',
+      clothes: 'clothes_diffuse.webp',
     };
   }
 
@@ -30,7 +30,7 @@ export class Assets {
     const name = decodeURIComponent(url).split(/[\\/]/).pop();
     if (!/\.(png|jpg|jpeg|tga)$/i.test(name)) return url;
     if (name.includes('_normal')) return EMPTY_PNG; // we do not have these files
-    return `${BASE}textures/character/${name}`;
+    return `${BASE}textures/character/${name.replace(/\.(png|jpg|jpeg)$/i, '.webp')}`; // the textures were converted to WebP
   }
 
   /** Loads an FBX model. Returns the Object3D (with `.animations`). */
@@ -99,7 +99,7 @@ export class Assets {
   /** Loads the 6 sky images. Order: right, left, top, bottom, front, back. */
   async loadSkybox() {
     const names = ['right1', 'left2', 'top3', 'bottom4', 'front5', 'back6'];
-    const files = names.map((n) => `${BASE}textures/skybox/spacestars_${n}.png`);
+    const files = names.map((n) => `${BASE}textures/skybox/spacestars_${n}.webp`);
     const texture = await new THREE.CubeTextureLoader().loadAsync(files);
     texture.colorSpace = THREE.SRGBColorSpace;
     return texture;

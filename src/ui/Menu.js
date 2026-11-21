@@ -9,7 +9,7 @@ import { Nav } from '../core/Nav.js';
 const BASE = import.meta.env.BASE_URL;
 const tex = (path) => `${BASE}textures/ui/${path}`;
 
-// Level pictures in niveles.png: x, y, width, height (pixels of the 1024 x 576 picture)
+// Level pictures in niveles.webp: x, y, width, height (pixels of the 1024 x 576 picture)
 const LEVEL_BOXES = [
   [48, 147, 282, 221],
   [371, 147, 282, 221],
@@ -76,7 +76,7 @@ export class Menu {
   }
 
   _main() {
-    this._background('portada.png');
+    this._background('portada.webp');
     this.sound.playMusic('music_menu.ogg');
     const start = () => {
       if (Save.tutorialSeen()) Nav.toLevels();
@@ -85,12 +85,12 @@ export class Menu {
         this.show('tutorial', 1);
       }
     };
-    this._button('btn_start.png', 405, 102, 560, 365, start);
-    this._button('btn_tutorial.png', 306, 76, 370, 485, () => {
+    this._button('btn_start.webp', 405, 102, 560, 365, start);
+    this._button('btn_tutorial.webp', 306, 76, 370, 485, () => {
       this.fromStart = false;
       this.show('tutorial', 1);
     });
-    this._button('btn_credits.png', 308, 76, 690, 485, () => this.show('credits'));
+    this._button('btn_credits.webp', 308, 76, 690, 485, () => this.show('credits'));
     if (!this.keyHandler) {
       this.keyHandler = (e) => {
         if (this.current === 'main' && (e.code === 'Enter' || e.code === 'Space')) start();
@@ -105,7 +105,7 @@ export class Menu {
     this.current = 'tutorial';
     this.sound.playMusic('music_menu.ogg');
     const mobile = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-    this._background(page === 4 ? `tutorial_pag4_${mobile ? 'mobile' : 'pc'}.png` : `tutorial_pag${page}.png`);
+    this._background(page === 4 ? `tutorial_pag4_${mobile ? 'mobile' : 'pc'}.webp` : `tutorial_pag${page}.webp`);
     if (page >= 2) Save.markTutorialSeen();
     for (let i = 0; i < 4; i++) {
       const zone = document.createElement('div');
@@ -115,10 +115,10 @@ export class Menu {
       this.stage.appendChild(zone);
     }
     const leave = () => (this.fromStart ? Nav.toLevels() : this.show('main'));
-    this._button('btn_back.png', 354, 86, 24, 478, leave);
-    if (page < 4) this._button('btn_next.png', 306, 75, 690, 478, () => this.show('tutorial', page + 1));
+    this._button('btn_back.webp', 354, 86, 24, 478, leave);
+    if (page < 4) this._button('btn_next.webp', 306, 75, 690, 478, () => this.show('tutorial', page + 1));
     else {
-      this._button('btn_finish.png', 306, 75, 690, 478, () => {
+      this._button('btn_finish.webp', 306, 75, 690, 478, () => {
         Save.markTutorialSeen();
         leave();
       });
@@ -128,20 +128,20 @@ export class Menu {
   _congratulations() {
     this.current = 'congratulations';
     this.sound.playMusic('music_congratulations.ogg');
-    this._background('congratulations.png');
-    this._button('btn_finish.png', 306, 75, 690, 478, () => Nav.toLevels());
+    this._background('congratulations.webp');
+    this._button('btn_finish.webp', 306, 75, 690, 478, () => Nav.toLevels());
   }
 
   _credits() {
     this.current = 'credits';
     this.sound.playMusic('music_credits.ogg');
-    this._background('creditos.png');
-    this._button('btn_back.png', 354, 86, 640, 478, () => this.show('main'));
+    this._background('creditos.webp');
+    this._button('btn_back.webp', 354, 86, 640, 478, () => this.show('main'));
   }
 
   _levels() {
     this.current = 'levels';
-    this._background('niveles.png');
+    this._background('niveles.webp');
     this.sound.playMusic('music_menu.ogg');
     const progress = Save.get();
     LEVEL_BOXES.forEach(([x, y, w, h], i) => {
@@ -157,18 +157,18 @@ export class Menu {
           this._loading(level);
         });
       } else {
-        const lock = image(tex('iconos/nivel_candado.png'), x + w / 2 - 43, y + h / 2 - 43, 86, 86);
+        const lock = image(tex('iconos/nivel_candado.webp'), x + w / 2 - 43, y + h / 2 - 43, 86, 86);
         this.stage.appendChild(lock);
         hit.style.background = 'rgba(0, 0, 0, 0.55)';
       }
       const medal = progress.medals[i];
       const file = { 1: 'stars_bronze', 2: 'stars_silver', 3: 'stars_gold' }[medal];
-      if (file) this.stage.appendChild(image(tex(`iconos/${file}.png`), x + w / 2 - 132, y + h + 14, 265, 57));
+      if (file) this.stage.appendChild(image(tex(`iconos/${file}.webp`), x + w / 2 - 132, y + h + 14, 265, 57));
     });
     if (progress.lastCompleted >= MAX_LEVELS) {
-      this.stage.appendChild(image(tex('iconos/info_gamecompleted.png'), 310, 470, 404, 82));
+      this.stage.appendChild(image(tex('iconos/info_gamecompleted.webp'), 310, 470, 404, 82));
     }
-    this._button('btn_back.png', 354, 86, 24, 470, () => Nav.toMenu());
+    this._button('btn_back.webp', 354, 86, 24, 470, () => Nav.toMenu());
   }
 
   /** "LOADING LEVEL n" and then the level starts. */

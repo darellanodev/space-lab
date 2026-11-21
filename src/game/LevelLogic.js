@@ -18,7 +18,7 @@ function hasScript(obj, name) {
   return comps.some((c) => c.type === 'Script' && c.script === name);
 }
 
-/** Makes a small plane that shows one cell of spritesheet1.png (4 columns x 2 rows). */
+/** Makes a small plane that shows one cell of spritesheet1.webp (4 columns x 2 rows). */
 function makeCellMaterial(texture, col, row) {
   const t = texture.clone();
   t.needsUpdate = true;
@@ -39,7 +39,7 @@ export class LevelLogic {
     this.door = null;
     this.teleport = null;
     this.finished = false;
-    this.sheet = new THREE.TextureLoader().load(`${BASE}textures/spritesheet1.png`);
+    this.sheet = new THREE.TextureLoader().load(`${BASE}textures/spritesheet1.webp`);
     this.sheet.colorSpace = THREE.SRGBColorSpace;
     this._find();
   }

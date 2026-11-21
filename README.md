@@ -111,6 +111,11 @@ The animations of the FBX are baked to `public/animations/character.json` (needs
 python tools/bake_animations.py public/models/character.fbx public/animations/character.json 30
 ```
 
+## Utility to make the files smaller
+
+- Textures are WebP files. To convert new PNG textures: `python tools/optimize_images.py 85` (needs Python 3 and Pillow). It converts all PNG files in `public/textures` and fixes the names in the code
+- Music is Ogg Vorbis at about 80 kbps: `ffmpeg -i in.ogg -c:a libvorbis -q:a 1 out.ogg`
+
 ## Saved data
 
 The game saves the last level finished, the medals and if the tutorial was seen in the browser (`localStorage`).

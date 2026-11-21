@@ -32,7 +32,8 @@ Each delivery: `spacelab-v0-X-0.zip` with `manifest.json` and `package.json` in 
 | 0.15.0 | GitHub Actions: build and deploy to GitHub Pages on every push | ✅ |
 | 0.16.0 | Touch / mobile controls | ✅ |
 | 0.17.0 | Loading bar, separate Three.js file for the browser cache | ✅ |
-| 0.18.0 | Smaller files: images (WebP), music, character model | ☐ |
+| 0.18.0 | Smaller files: images to WebP and lighter music (public/ from 20 MB to 8 MB) | ✅ |
+| 0.19.0 | Smaller character model (remove unused bones) | ☐ |
 
 ## Waiting for files
 - [x] All models (`Assets/Meshes`, `.fbx`) and character / skybox textures
